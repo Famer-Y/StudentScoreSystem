@@ -73,7 +73,7 @@ public class StudentDao {
 			stmt.setString(12, stu.getsWchat());
 			stmt.setString(13, stu.getsPhone());
 			stmt.setString(14, stu.getsEmail());
-			stmt.setString(15, stu.getsPhotoPath());
+			stmt.setString(15, stu.getsPhotoPath());			
 			
 			int num = stmt.executeUpdate();
 			CloseConnection();

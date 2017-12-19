@@ -77,7 +77,7 @@
         <tbody>
         <%
         Admin ad = new Admin();
-        ArrayList list = ad.selectStudentInfoForAll();
+        ArrayList list = ad.selectStudentInfo();
         int count = list.size();
         pageCount = (count % limit == 0) ? (count / limit) : (count / limit + 1);
         dateCount = list.size();
