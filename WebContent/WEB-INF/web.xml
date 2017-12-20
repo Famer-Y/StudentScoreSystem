@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:jsp="http://java.sun.com/xml/ns/javaee/jsp" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
   <display-name>StudentScoreSystem</display-name>
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
@@ -10,39 +10,39 @@
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
   <jsp-config>
-	<taglib>
-	<taglib-uri>http://java.sun.com/jstl/fmt</taglib-uri>
-	<taglib-location>/WEB-INF/fmt.tld</taglib-location>
-	</taglib>
-	<taglib>
-	<taglib-uri>http://java.sun.com/jstl/fmt-rt</taglib-uri>
-	<taglib-location>/WEB-INF/fmt-rt.tld</taglib-location>
-	</taglib>
-	<taglib>
-	<taglib-uri>http://java.sun.com/jstl/core</taglib-uri>
-	<taglib-location>/WEB-INF/c.tld</taglib-location>
-	</taglib>
-	<taglib>
-	<taglib-uri>http://java.sun.com/jstl/core-rt</taglib-uri>
-	<taglib-location>/WEB-INF/c-rt.tld</taglib-location>
-	</taglib>
-	<taglib>
-	<taglib-uri>http://java.sun.com/jstl/sql</taglib-uri>
-	<taglib-location>/WEB-INF/sql.tld</taglib-location>
-	</taglib>
-	<taglib>
-	<taglib-uri>http://java.sun.com/jstl/sql-rt</taglib-uri>
-	<taglib-location>/WEB-INF/sql-rt.tld</taglib-location>
-	</taglib>
-	<taglib>
-	<taglib-uri>http://java.sun.com/jstl/x</taglib-uri>
-	<taglib-location>/WEB-INF/x.tld</taglib-location>
-	</taglib>
-	<taglib>
-	<taglib-uri>http://java.sun.com/jstl/x-rt</taglib-uri>
-	<taglib-location>/WEB-INF/x-rt.tld</taglib-location>
-	</taglib>
-   </jsp-config>
+    <taglib>
+      <taglib-uri>http://java.sun.com/jstl/fmt</taglib-uri>
+      <taglib-location>/WEB-INF/fmt.tld</taglib-location>
+    </taglib>
+    <taglib>
+      <taglib-uri>http://java.sun.com/jstl/fmt-rt</taglib-uri>
+      <taglib-location>/WEB-INF/fmt-rt.tld</taglib-location>
+    </taglib>
+    <taglib>
+      <taglib-uri>http://java.sun.com/jstl/core</taglib-uri>
+      <taglib-location>/WEB-INF/c.tld</taglib-location>
+    </taglib>
+    <taglib>
+      <taglib-uri>http://java.sun.com/jstl/core-rt</taglib-uri>
+      <taglib-location>/WEB-INF/c-rt.tld</taglib-location>
+    </taglib>
+    <taglib>
+      <taglib-uri>http://java.sun.com/jstl/sql</taglib-uri>
+      <taglib-location>/WEB-INF/sql.tld</taglib-location>
+    </taglib>
+    <taglib>
+      <taglib-uri>http://java.sun.com/jstl/sql-rt</taglib-uri>
+      <taglib-location>/WEB-INF/sql-rt.tld</taglib-location>
+    </taglib>
+    <taglib>
+      <taglib-uri>http://java.sun.com/jstl/x</taglib-uri>
+      <taglib-location>/WEB-INF/x.tld</taglib-location>
+    </taglib>
+    <taglib>
+      <taglib-uri>http://java.sun.com/jstl/x-rt</taglib-uri>
+      <taglib-location>/WEB-INF/x-rt.tld</taglib-location>
+    </taglib>
+  </jsp-config>
   <servlet>
     <description></description>
     <display-name>DeleteStudentServlet</display-name>
@@ -62,5 +62,25 @@
   <servlet-mapping>
     <servlet-name>AddStudentServlet</servlet-name>
     <url-pattern>/AddStudentServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>FindStudentById</display-name>
+    <servlet-name>FindStudentById</servlet-name>
+    <servlet-class>com.bqlib.servlet.FindStudentById</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FindStudentById</servlet-name>
+    <url-pattern>/findStudentById</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ViewDetail</display-name>
+    <servlet-name>ViewDetail</servlet-name>
+    <servlet-class>com.bqlib.servlet.ViewDetail</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ViewDetail</servlet-name>
+    <url-pattern>/viewDetail</url-pattern>
   </servlet-mapping>
 </web-app>

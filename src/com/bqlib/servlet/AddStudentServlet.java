@@ -46,7 +46,7 @@ public class AddStudentServlet extends HttpServlet {
 		Student stu = new Student();
 		request.setCharacterEncoding("utf-8");
 		response.setCharacterEncoding("utf-8");
-		String sSno = "";
+		String sSno = request.getParameter("sSno");
 		String sPhotoPath = request.getParameter("sPhotoPath");
 		String sName = request.getParameter("sName");
 		String sSex = request.getParameter("sSex");
@@ -68,12 +68,12 @@ public class AddStudentServlet extends HttpServlet {
 		}
 		System.out.println(sPhotoPath);
 		//学号的自动生成（未完善版）
-		Date d = new Date();            
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy");  
-        String year = sdf.format(d);
-        sSno = year + pId;
-//        System.out.println(sSno);
-		
+//		Date d = new Date();            
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy");  
+//        String year = sdf.format(d);
+//        sSno = year + pId;
+////        System.out.println(sSno);
+//		
 		//格式化表单中的时间
 		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
 		Date birthday = null;

@@ -2,10 +2,6 @@
 	import = "java.sql.*, com.bqlib.service.*, com.bqlib.model.*, 
 	java.util.Date, java.util.ArrayList"
     pageEncoding="UTF-8"%>
-<%
-String path = request.getContextPath();
-String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
-%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,25 +34,34 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     %>
 </head>
 <body>
-	<form method="post" action="deleteStudent" onsubmit="return del()" id="from_id">
+	<!-- 头部 -->
     <div class="layui-col-md12 color-black">
         <div class="layui-row">
             <div class="layui-col-md4">
-                <span class="title-font"><i class="layui-icon">&#xe623;学生基本信息列表</i></span>
-            </div>
-
-            <div class="layui-col-md4 layui-col-md-offset4">
-                <div align="right">                	
-                   	<a class="layui-btn layui-btn-xs color-black" onclick="selectAll()"><i class="layui-icon">&#xe627;&nbsp;全选</i></a>
-                   	<a class="layui-btn layui-btn-xs color-black" onclick="unSelectAll()"><i class="layui-icon">&#xe626;&nbsp;取消全选</i></a>
-                   	<a class="layui-btn layui-btn-xs color-black" href="addStudentInfo.jsp"><i class="layui-icon">&#xe654;&nbsp;新增</i></a>
-                    <!--  <a class="layui-btn layui-btn-xs color-black"><i class="layui-icon">&#xe642;&nbsp;修改</i></a>-->
-                    <a class="layui-btn layui-btn-xs color-black" onclick="del()"><i class="layui-icon">&#xe640;&nbsp;删除</i></a>                    
+            	<div align="left">
+                	<span class="title-font"><i class="layui-icon">&#xe623;学生列表</i></span>
                 </div>
             </div>
-           
+            <!--  
+            <div class="layui-col-md4 layui-col-md-offset4">
+                <div align="right">
+                    <a class="layui-btn layui-btn-xs color-black" onclick="selectAll()"><i class="layui-icon">&#xe627;&nbsp;全选</i></a>
+                    <a class="layui-btn layui-btn-xs color-black" onclick="unSelectAll()"><i class="layui-icon">&#xe626;&nbsp;取消全选</i></a>
+                    <a class="layui-btn layui-btn-xs color-black"><i class="layui-icon">&#xe654;&nbsp;新增</i></a>
+                    <a class="layui-btn layui-btn-xs color-black"><i class="layui-icon">&#xe642;&nbsp;修改</i></a>
+                    <a class="layui-btn layui-btn-xs color-black"><i class="layui-icon">&#xe640;&nbsp;删除</i></a>
+                </div>
+            </div>
+            -->
         </div>
     </div>
+    
+    <!-- 查询条件栏 -->
+    <div class="layui-col-md12">
+    	
+    </div>
+    
+	<!-- 查询列表 --> 
     <div class="layui-col-md12">
         <table class="layui-table" lay-size="sm">
         <colgroup>
@@ -116,7 +121,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <td><div align="center">墨家</div></td>
             <td><div align="center">巨子</div></td>
             <td><div align="center"><%= stu.getsBirthday()%></div></td>
-            <td><div align="center"><a href="<%=basePath %>viewDetail?sSno=<%= stu.getsSno()%>">查看</a> | <a href="singleStudentInfo.jsp?sSno=<%= stu.getsSno()%>">修改</a> | <a href="singleStudentInfo.jsp?sSno=<%= stu.getsSno()%>">删除</a></div></td>
+            <td><div align="center"><a >删除 </a>| 查看</div></td>
         </tr>
         <%} %>
         <!--<tr>-->
@@ -135,24 +140,21 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         <!--</tr>-->
         </tbody>
     </table>
-    </form>
     <div class="layui-col-md12">
 	    <div class="layui-row">
-	    	<div class="layui-col-md4" align="left">
+	    	<div class="layui-col-md4">
 	    		<div class="layui-btn-group">    
 			     	<a href="studentList.jsp?curPageNum=0" class="layui-btn layui-btn-primary layui-btn-sm">首页</a>
 				    <a href="studentList.jsp?curPageNum=<%if (curPageNum <= 0){curPageNum = 0;out.print(curPageNum);}else {out.print(curPageNum - 1);}%>" 
-				    class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon">&#xe65a;上一页</i></a>
+				    class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon">&#xe65a;</i></a>
 				    <a href="studentList.jsp?curPageNum=<%if (curPageNum >= pageCount - 1){curPageNum = pageCount - 1;out.print(curPageNum);}else {out.print(curPageNum + 1);}%>" 
-				    class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon">下一页&#xe65b;</i></a>
+				    class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon">&#xe65b;</i></a>
 				    <a href="studentList.jsp?curPageNum=<%= pageCount - 1%>" class="layui-btn layui-btn-primary layui-btn-sm">末页</a>
 		  		</div>
 	    	</div>
-	    	<!--
 	    	<div class="layui-col-md4 layui-col-md-offset4" align="right">
 	    		共<%=pageCount %>页 <%=dateCount %>名学生
 	    	</div>
-	    	 -->
 	    </div>
   	</div>
     </div>
@@ -165,7 +167,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 checkBoxArr[i].checked = true;
             }
         }
-        
+
         function unSelectAll(){
             var checkBoxArr = document.getElementsByName("selectGroup");
             for (var i = 0; i < checkBoxArr.length; i++) {
@@ -173,21 +175,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             }
         }
         
-        function del(){
-        	var flag = false;
-        	var checkBoxArr = document.getElementsByName("selectGroup");
-        	for (var i = 0; i < checkBoxArr.length; i++) {
-                if (checkBoxArr[i].checked){
-               		flag = true;
-                }
-            }
-        	if (flag){
-        		document.getElementById("from_id").submit();
-        		return true;
-        	}
-        	alert("请选择你要删除的数据！");
-        	return false;
-        }
     </script>
 </body>
 </html>

@@ -222,6 +222,42 @@ public class StudentDao {
 	}
 	
 	/**
+	 * 修改学生信息
+	 * @param stu
+	 * @return
+	 */
+	public int updateStudentInfo(Student stu){
+		int num = 0;
+		try {
+			getConnection();
+			String sql = "update  dbo.student set sName=?,sSex=?,sBirthday=?,sPolitical=?,"
+					+ "dId=?,pId=?,sIdentity=?,sAddress=?,sQQ=?,sWchat=?,sPhone=?,sEmail=?,"
+					+ "sPhotoPath=? where sSno = ?";
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1,stu.getsName());
+			stmt.setString(2,stu.getsSex());
+			stmt.setDate(3, new java.sql.Date(stu.getsBirthday().getTime()));
+			stmt.setString(4,stu.getsPolitical());
+			stmt.setString(5,stu.getdId());
+			stmt.setString(6,stu.getpId());
+			stmt.setString(7,stu.getsIdentity());
+			stmt.setString(8, stu.getsAddress());
+			stmt.setString(9, stu.getsQQ());
+			stmt.setString(10, stu.getsWchat());
+			stmt.setString(11, stu.getsPhone());
+			stmt.setString(12, stu.getsEmail());
+			stmt.setString(13, stu.getsPhotoPath());
+			stmt.setString(14, stu.getsSno());
+			num = stmt.executeUpdate();
+			System.out.println("修改学生信息成功");
+			CloseConnection();
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+		return num;
+	}
+	
+	/**
 	 * 按学号删除学生
 	 * @param sSno
 	 * @return
