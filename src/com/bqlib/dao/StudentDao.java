@@ -1,259 +1,27 @@
 package com.bqlib.dao;
 
-import java.sql.*;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
-import com.bqlib.db.DB;
 import com.bqlib.model.Student;
+import com.bqlib.util.DbUtil;
 
-/**
- * @author Administrator
- *
- */
-/**
- * @author Administrator
- *
- */
 public class StudentDao {
-	private DB db;
-	private Connection conn = null;
-	private PreparedStatement stmt = null;
-	private ResultSet rs = null;
 	
 	/**
-	 * 获取数据库连接
-	 * @return 
-	 */
-	private void getConnection(){
-		db = new DB();
-		conn = db.getConnection();
-	}
-	
-	/**
-	 * 关闭数据库连接
-	 */
-	public void CloseConnection(){		
-		try {
-			if (rs != null){
-				rs.close();
-			}
-			if (stmt != null){
-				stmt.close();
-			}
-			if (conn != null){
-				conn.close();
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * 向数据库中新增学生信息
-	 * @param stu
+	 * 添加学生
+	 * @param student
 	 * @return
+	 * @throws Exception
 	 */
-	public boolean addStudentInfo(Student stu){
-		
-		try {
-			getConnection();
-			String sql = "INSERT INTO student(sSno,sPassword,sName,sSex,sBirthday,sPolitical,dId,pId,sIdentity,sAddress,sQQ,sWchat,sPhone,sEmail,sPhotoPath) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-			stmt = conn.prepareStatement(sql);
-			stmt.setString(1, stu.getsSno());
-			stmt.setString(2, stu.getsPassword());
-			stmt.setString(3, stu.getsName());
-			stmt.setString(4, stu.getsSex());
-			stmt.setDate(5, new java.sql.Date(stu.getsBirthday().getTime()));
-			stmt.setString(6, stu.getsPolitical());
-			stmt.setString(7, stu.getdId());
-			stmt.setString(8, stu.getpId());
-			stmt.setString(9, stu.getsIdentity());
-			stmt.setString(10, stu.getsAddress());
-			stmt.setString(11, stu.getsQQ());
-			stmt.setString(12, stu.getsWchat());
-			stmt.setString(13, stu.getsPhone());
-			stmt.setString(14, stu.getsEmail());
-			stmt.setString(15, stu.getsPhotoPath());			
-			
-			int num = stmt.executeUpdate();
-			CloseConnection();
-			if (num > 0){
-				System.out.println("信息插入成功！！！");
-				return true;
-			} else {
-				System.out.println("信息插入失败！！！");
-				return false;
-			}			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		}
-	}
-	
-	/**
-	 * 查询所有学生信息
-	 * @return
-	 */
-	public ResultSet selectStudentInfo(){
-		ResultSet tRs = null;
-		try {
-			getConnection();
-			String sql = "select sSno,sPassword,sName,sSex,sBirthday,sPolitical,dId,pId,sIdentity,sAddress,sQQ,sWchat,sPhone,sEmail,sPhotoPath from student";
-			stmt = conn.prepareStatement(sql);
-			rs = stmt.executeQuery();
-			tRs = rs;
-			//CloseConnection();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return tRs;
-	}
-
-	/**
-	 * 按学号查询学生信息
-	 * @param sSno
-	 * @return
-	 */
-	public ResultSet selectStudentInfoBySno(String sSno){
-		ResultSet tRs = null;
-		try {
-			getConnection();
-			String sql = "select sSno,sPassword,sName,sSex,sBirthday,sPolitical,dId,pId,sIdentity,sAddress,sQQ,sWchat,sPhone,sEmail,sPhotoPath from student where sSno = ?";
-			stmt = conn.prepareStatement(sql);
-			stmt.setString(1,sSno);
-			rs = stmt.executeQuery();
-			tRs = rs;
-			//CloseConnection();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return tRs;
-	}
-
-	/**
-	 * 按身份证号查询学生信息
-	 * @param sIdentity
-	 * @return
-	 */
-	public ResultSet selectStudentInfoByIdentity(String sIdentity){
-		ResultSet tRs = null;
-		try {
-			getConnection();
-			String sql = "select sSno,sPassword,sName,sSex,sBirthday,sPolitical,dId,pId,sIdentity,sAddress,sQQ,sWchat,sPhone,sEmail,sPhotoPath from student where sIdentity = ?";
-			stmt = conn.prepareStatement(sql);
-			stmt.setString(1,sIdentity);
-			rs = stmt.executeQuery();
-			tRs = rs;
-			//CloseConnection();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return tRs;
-	}
-	
-	/**
-	 * 按姓名查询学生
-	 * @param sName
-	 * @return
-	 */
-	public ResultSet selectStudentInfoByName(String sName){
-		ResultSet tRs = null;
-		try {
-			getConnection();
-			String sql = "select sSno,sPassword,sName,sSex,sBirthday,sPolitical,dId,pId,sIdentity,sAddress,sQQ,sWchat,sPhone,sEmail,sPhotoPath from student where sName = ?";
-			stmt = conn.prepareStatement(sql);
-			stmt.setString(1,sName);
-			rs = stmt.executeQuery();
-			tRs = rs;
-			//CloseConnection();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return tRs;
-	}
-	
-	/**
-	 * 按院系查询学生
-	 * @param dId
-	 * @return
-	 */
-	public ResultSet selectStudentInfoByDepartment(String dId){
-		ResultSet tRs = null;
-		try {
-			getConnection();
-			String sql = "select sSno,sPassword,sName,sSex,sBirthday,sPolitical,dId,pId,sIdentity,sAddress,sQQ,sWchat,sPhone,sEmail,sPhotoPath from student where dId = ?";
-			stmt = conn.prepareStatement(sql);
-			stmt.setString(1,dId);
-			rs = stmt.executeQuery();
-			tRs = rs;
-			//CloseConnection();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return tRs;
-	}
-	
-	/**
-	 * 按专业查询学生
-	 * @param pId
-	 * @return
-	 */
-	public ResultSet selectStudentInfoByProfessio(String pId){
-		ResultSet tRs = null;
-		try {
-			getConnection();
-			String sql = "select sSno,sPassword,sName,sSex,sBirthday,sPolitical,dId,pId,sIdentity,sAddress,sQQ,sWchat,sPhone,sEmail,sPhotoPath from student where pId = ?";
-			stmt = conn.prepareStatement(sql);
-			stmt.setString(1,pId);
-			rs = stmt.executeQuery();
-			tRs = rs;
-			//CloseConnection();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return tRs;
-	}
-	
-	/**
-	 * 修改学生信息
-	 * @param stu
-	 * @return
-	 */
-	public int updateStudentInfo(Student stu){
-		int num = 0;
-		try {
-			getConnection();
-			String sql = "update  dbo.student set sName=?,sSex=?,sBirthday=?,sPolitical=?,"
-					+ "dId=?,pId=?,sIdentity=?,sAddress=?,sQQ=?,sWchat=?,sPhone=?,sEmail=?,"
-					+ "sPhotoPath=? where sSno = ?";
-			stmt = conn.prepareStatement(sql);
-			stmt.setString(1,stu.getsName());
-			stmt.setString(2,stu.getsSex());
-			stmt.setDate(3, new java.sql.Date(stu.getsBirthday().getTime()));
-			stmt.setString(4,stu.getsPolitical());
-			stmt.setString(5,stu.getdId());
-			stmt.setString(6,stu.getpId());
-			stmt.setString(7,stu.getsIdentity());
-			stmt.setString(8, stu.getsAddress());
-			stmt.setString(9, stu.getsQQ());
-			stmt.setString(10, stu.getsWchat());
-			stmt.setString(11, stu.getsPhone());
-			stmt.setString(12, stu.getsEmail());
-			stmt.setString(13, stu.getsPhotoPath());
-			stmt.setString(14, stu.getsSno());
-			num = stmt.executeUpdate();
-			System.out.println("修改学生信息成功");
-			CloseConnection();
-		} catch (Exception e){
-			e.printStackTrace();
-		}
+	public int addStudent(Student student) throws Exception{
+		String sql = "INSERT INTO student(sSno,sPassword,sName,sSex,sBirthday,sPolitical,dId,pId,sIdentity,sAddress,sQQ,sWchat,sPhone,sEmail,sPhotoPath)"
+				+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		int num = DbUtil.executeUpdate(sql, new Object[]{student.getsSno(), student.getsPassword(), student.getsName(), student.getsSex(), new java.sql.Date(student.getsBirthday().getTime()), 
+				student.getsPolitical(), student.getdId(), student.getpId(), student.getsIdentity(), student.getsAddress(), student.getsQQ(), student.getsWchat(), student.getsPhone(), student.getsEmail(),
+				student.getsPhotoPath()});
 		return num;
 	}
 	
@@ -261,21 +29,258 @@ public class StudentDao {
 	 * 按学号删除学生
 	 * @param sSno
 	 * @return
+	 * @throws Exception
 	 */
-	public boolean deleteStudentInfoBySno(String sSno){			
-		try {
-			getConnection();
-			String sql = "delete from student where sSno = ?";
-			stmt = conn.prepareStatement(sql);
-			stmt.setString(1, sSno);
-			stmt.executeUpdate();
-			CloseConnection();
-			System.out.println("按学号删除学生成功！！");
-			return true;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		}
+	public int deleteStudentById(String sSno) throws Exception{
+		String sql = "delete from student where sSno = ?";
+		int num = DbUtil.executeUpdate(sql, new Object[]{sSno});		
+		return num;
 	}
+	
+	/**
+	 * 更新学生
+	 * @param student
+	 * @return
+	 * @throws Exception
+	 */
+	public int updateStudent(Student student) throws Exception{
+		String sql = "update  dbo.student set sName=?,sSex=?,sBirthday=?,sPolitical=?,"
+				+ "dId=?,pId=?,sIdentity=?,sAddress=?,sQQ=?,sWchat=?,sPhone=?,sEmail=?,"
+				+ "sPhotoPath=? where sSno = ?";
+		int num = DbUtil.executeUpdate(sql, new Object[]{student.getsName(), student.getsSex(),
+				new java.sql.Date(student.getsBirthday().getTime()), student.getsPolitical(), student.getdId(), 
+				student.getpId(), student.getsIdentity(), student.getsAddress(), student.getsQQ(), student.getsWchat(), 
+				student.getsPhone(), student.getsEmail(), student.getsPhotoPath(), student.getsSno()});
+		return num;
+	}
+	
+	/**
+	 * 统计学生的人数
+	 * @return
+	 * @throws Exception
+	 */
+	public int countStudent() throws Exception {
+	    String sql = "select count(1) as countStudent from student";
+	    ResultSet rs = DbUtil.executeQuery(sql, null);
+	    int num = 0;
+	    while (rs.next()){
+	        num = rs.getInt("countStudent");
+	    }
+	    return num;
+	}
+	
+	/**
+	 * 查询表中所有学生
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Student> listStudentAll() throws Exception{    
+        List<Student> listStudent = new ArrayList<Student>();
+        String sql = "select sSno,sPassword,sName,sSex,sBirthday,sPolitical,dId,pId,sIdentity,sAddress,sQQ,sWchat,sPhone,sEmail,sPhotoPath from student";
+        ResultSet rs = DbUtil.executeQuery(sql, null);        
+        while (rs.next()){
+            Student student = new Student();
+            student.setsSno(rs.getString("sSno"));
+            student.setsPassword(rs.getString("sPassword"));
+            student.setsName(rs.getString("sName"));
+            student.setsSex(rs.getString("sSex"));
+            Date birthday = new Date();
+            birthday = (Date) rs.getDate("sBirthday");
+            student.setsBirthday(birthday);
+            student.setsPolitical(rs.getString("sPolitical"));
+            student.setdId(rs.getString("dId"));
+            student.setpId(rs.getString("pId"));
+            student.setsIdentity(rs.getString("sIdentity"));
+            student.setsAddress(rs.getString("sAddress"));
+            student.setsQQ(rs.getString("sQQ"));
+            student.setsWchat(rs.getString("sWchat"));
+            student.setsPhone(rs.getString("sPhone"));
+            student.setsEmail(rs.getString("sEmail"));
+            student.setsPhotoPath(rs.getString("sPhotoPath"));
+            listStudent.add(student);
+        }        
+        return listStudent;
+    }
+	
+	/**
+	 * 查询部分学生信息
+	 * @param start
+	 * @param size
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Student> listStudentLimit(Integer start, Integer size) throws Exception{    
+        
+	    List<Student> listStudent = new ArrayList<Student>();
+        String sql = "select top "+size+" sSno,sPassword,sName,sSex,sBirthday,sPolitical,dId,pId,sIdentity,sAddress,sQQ,sWchat,sPhone,sEmail,sPhotoPath from student where sSno not in ( select top "+ start +" sSno from student)";
+        ResultSet rs = DbUtil.executeQuery(sql, null);        
+        while (rs.next()){
+            Student student = new Student();
+            student.setsSno(rs.getString("sSno"));
+            student.setsPassword(rs.getString("sPassword"));
+            student.setsName(rs.getString("sName"));
+            student.setsSex(rs.getString("sSex"));
+            Date birthday = new Date();
+            birthday = (Date) rs.getDate("sBirthday");
+            student.setsBirthday(birthday);
+            student.setsPolitical(rs.getString("sPolitical"));
+            student.setdId(rs.getString("dId"));
+            student.setpId(rs.getString("pId"));
+            student.setsIdentity(rs.getString("sIdentity"));
+            student.setsAddress(rs.getString("sAddress"));
+            student.setsQQ(rs.getString("sQQ"));
+            student.setsWchat(rs.getString("sWchat"));
+            student.setsPhone(rs.getString("sPhone"));
+            student.setsEmail(rs.getString("sEmail"));
+            student.setsPhotoPath(rs.getString("sPhotoPath"));
+            listStudent.add(student);
+        }        
+        return listStudent;
+    }
+	
+	/**
+	 * 根据学号查找学生
+	 * @param id 学号
+	 * @return
+	 * @throws Exception
+	 */
+	public Student getStudentBySno(String sno) throws Exception{
+		
+		Student student = null;	
+		String sql = "select sSno,sPassword,sName,sSex,sBirthday,sPolitical,dId,pId,sIdentity,sAddress,sQQ,sWchat,sPhone,sEmail,sPhotoPath from student where sSno = ?";		
+		ResultSet rs = DbUtil.executeQuery(sql, new Object[]{sno});
+		while (rs.next()){
+			student = new Student();
+			student.setsSno(rs.getString("sSno"));
+			student.setsPassword(rs.getString("sPassword"));
+			student.setsName(rs.getString("sName"));
+			student.setsSex(rs.getString("sSex"));
+	    	Date birthday = new Date();
+	    	birthday = (Date) rs.getDate("sBirthday");
+	    	student.setsBirthday(birthday);
+	    	student.setsPolitical(rs.getString("sPolitical"));
+	    	student.setdId(rs.getString("dId"));
+	    	student.setpId(rs.getString("pId"));
+	    	student.setsIdentity(rs.getString("sIdentity"));
+	    	student.setsAddress(rs.getString("sAddress"));
+	    	student.setsQQ(rs.getString("sQQ"));
+	    	student.setsWchat(rs.getString("sWchat"));
+	    	student.setsPhone(rs.getString("sPhone"));
+	    	student.setsEmail(rs.getString("sEmail"));
+	    	student.setsPhotoPath(rs.getString("sPhotoPath"));
+		}
+		return student;		
+	}
+	
+	/**
+	 * 根据姓名查找学生
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Student> listStudentByName(String sName) throws Exception{
+		
+		List<Student> listStudent = new ArrayList<Student>();
+		String sql = "select sSno,sPassword,sName,sSex,sBirthday,sPolitical,dId,pId,sIdentity,sAddress,sQQ,sWchat,sPhone,sEmail,sPhotoPath from student where sName = ?";
+		ResultSet rs = DbUtil.executeQuery(sql, new Object[]{sName});
+		
+		while (rs.next()){
+			Student student = new Student();
+			student.setsSno(rs.getString("sSno"));
+			student.setsPassword(rs.getString("sPassword"));
+			student.setsName(rs.getString("sName"));
+			student.setsSex(rs.getString("sSex"));
+	    	Date birthday = new Date();
+	    	birthday = (Date) rs.getDate("sBirthday");
+	    	student.setsBirthday(birthday);
+	    	student.setsPolitical(rs.getString("sPolitical"));
+	    	student.setdId(rs.getString("dId"));
+	    	student.setpId(rs.getString("pId"));
+	    	student.setsIdentity(rs.getString("sIdentity"));
+	    	student.setsAddress(rs.getString("sAddress"));
+	    	student.setsQQ(rs.getString("sQQ"));
+	    	student.setsWchat(rs.getString("sWchat"));
+	    	student.setsPhone(rs.getString("sPhone"));
+	    	student.setsEmail(rs.getString("sEmail"));
+	    	student.setsPhotoPath(rs.getString("sPhotoPath"));
+	    	listStudent.add(student);
+		}
+		
+		return listStudent;
+	}
+	
+	/**
+	 * 按院系id查询学生信息
+	 * @param dId
+	 * @param start
+	 * @param size
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Student> listStudentLimitByDepartment(String dId, Integer start, Integer size) throws Exception{    
+        
+        List<Student> listStudent = new ArrayList<Student>();
+        String sql = "select top "+size+" sSno,sPassword,sName,sSex,sBirthday,sPolitical,dId,pId,sIdentity,sAddress,sQQ,sWchat,sPhone,sEmail,sPhotoPath from student "
+                + "where sSno not in ( select top "+ start +" sSno from student where dId = " + dId + ") and dId = " + dId;
+        ResultSet rs = DbUtil.executeQuery(sql, null);        
+        while (rs.next()){
+            Student student = new Student();
+            student.setsSno(rs.getString("sSno"));
+            student.setsPassword(rs.getString("sPassword"));
+            student.setsName(rs.getString("sName"));
+            student.setsSex(rs.getString("sSex"));
+            Date birthday = new Date();
+            birthday = (Date) rs.getDate("sBirthday");
+            student.setsBirthday(birthday);
+            student.setsPolitical(rs.getString("sPolitical"));
+            student.setdId(rs.getString("dId"));
+            student.setpId(rs.getString("pId"));
+            student.setsIdentity(rs.getString("sIdentity"));
+            student.setsAddress(rs.getString("sAddress"));
+            student.setsQQ(rs.getString("sQQ"));
+            student.setsWchat(rs.getString("sWchat"));
+            student.setsPhone(rs.getString("sPhone"));
+            student.setsEmail(rs.getString("sEmail"));
+            student.setsPhotoPath(rs.getString("sPhotoPath"));
+            listStudent.add(student);
+        }        
+        return listStudent;
+    }
+	
+	/**
+	 * 按专业查询学生信息
+	 * @param pId
+	 * @param start
+	 * @param size
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Student> listStudentLimitByProfession(String pId, Integer start, Integer size) throws Exception{    
+        
+        List<Student> listStudent = new ArrayList<Student>();
+        String sql = "select top "+size+" sSno,sPassword,sName,sSex,sBirthday,sPolitical,dId,pId,sIdentity,sAddress,sQQ,sWchat,sPhone,sEmail,sPhotoPath from student "
+                + "where sSno not in ( select top "+ start +" sSno from student where dId = " + pId + ") and dId = " + pId;
+        ResultSet rs = DbUtil.executeQuery(sql, null);        
+        while (rs.next()){
+            Student student = new Student();
+            student.setsSno(rs.getString("sSno"));
+            student.setsPassword(rs.getString("sPassword"));
+            student.setsName(rs.getString("sName"));
+            student.setsSex(rs.getString("sSex"));
+            Date birthday = new Date();
+            birthday = (Date) rs.getDate("sBirthday");
+            student.setsBirthday(birthday);
+            student.setsPolitical(rs.getString("sPolitical"));
+            student.setdId(rs.getString("dId"));
+            student.setpId(rs.getString("pId"));
+            student.setsIdentity(rs.getString("sIdentity"));
+            student.setsAddress(rs.getString("sAddress"));
+            student.setsQQ(rs.getString("sQQ"));
+            student.setsWchat(rs.getString("sWchat"));
+            student.setsPhone(rs.getString("sPhone"));
+            student.setsEmail(rs.getString("sEmail"));
+            student.setsPhotoPath(rs.getString("sPhotoPath"));
+            listStudent.add(student);
+        }        
+        return listStudent;
+    }	
 }

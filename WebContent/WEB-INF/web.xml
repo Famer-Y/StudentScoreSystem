@@ -83,4 +83,14 @@
     <servlet-name>ViewDetail</servlet-name>
     <url-pattern>/viewDetail</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>AdministratorServlet</display-name>
+    <servlet-name>AdministratorServlet</servlet-name>
+    <servlet-class>com.bqlib.servlet.AdministratorServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AdministratorServlet</servlet-name>
+    <url-pattern>/administratorServlet</url-pattern>
+  </servlet-mapping>
 </web-app>

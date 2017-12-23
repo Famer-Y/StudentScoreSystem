@@ -10,8 +10,10 @@ public class Student {
 	private Date sBirthday;
 	private String sPolitical;
 	private String dId;
+	private String dName;
 	private String pId;
-	private String sIdentity;
+	private String pName;
+    private String sIdentity;
 	private String sAddress;
 	private String sQQ;
 	private String sWchat;
@@ -67,6 +69,18 @@ public class Student {
 	public void setpId(String pId) {
 		this.pId = pId;
 	}
+	public String getdName() {
+        return dName;
+    }
+    public void setdName(String dName) {
+        this.dName = dName;
+    }
+    public String getpName() {
+        return pName;
+    }
+    public void setpName(String pName) {
+        this.pName = pName;
+    }
 	public String getsIdentity() {
 		return sIdentity;
 	}

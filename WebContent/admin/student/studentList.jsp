@@ -5,6 +5,7 @@
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+request.getSession().setAttribute("url", basePath);
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,135 +31,139 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             background-color:#353c44;
         }
     </style>
-    <%!
-    	int dateCount = 0;
-    	int pageCount = 0;
-    	int curPageNum = 0;
-    	int limit = 2;
-    %>
 </head>
 <body>
-	<form method="post" action="deleteStudent" onsubmit="return del()" id="from_id">
     <div class="layui-col-md12 color-black">
         <div class="layui-row">
             <div class="layui-col-md4">
-                <span class="title-font"><i class="layui-icon">&#xe623;学生基本信息列表</i></span>
-            </div>
-
+                <span class="title-font"><i class="layui-icon">&#xe623;学生信息列表</i></span>
+            </div>         
             <div class="layui-col-md4 layui-col-md-offset4">
-                <div align="right">                	
-                   	<a class="layui-btn layui-btn-xs color-black" onclick="selectAll()"><i class="layui-icon">&#xe627;&nbsp;全选</i></a>
-                   	<a class="layui-btn layui-btn-xs color-black" onclick="unSelectAll()"><i class="layui-icon">&#xe626;&nbsp;取消全选</i></a>
-                   	<a class="layui-btn layui-btn-xs color-black" href="addStudentInfo.jsp"><i class="layui-icon">&#xe654;&nbsp;新增</i></a>
-                    <!--  <a class="layui-btn layui-btn-xs color-black"><i class="layui-icon">&#xe642;&nbsp;修改</i></a>-->
-                    <a class="layui-btn layui-btn-xs color-black" onclick="del()"><i class="layui-icon">&#xe640;&nbsp;删除</i></a>                    
+                <div align="right" class="demoTable">                	
+                   	<a class="layui-btn layui-btn-xs color-black" href="addStudentInfo.jsp" ><i class="layui-icon">&#xe654;&nbsp;新增</i></a>
+                    <a class="layui-btn layui-btn-xs color-black"><i class="layui-icon">&#xe642;&nbsp;修改</i></a>
+                    <a class="layui-btn layui-btn-xs color-black" data-type="getCheckData"><i class="layui-icon">&#xe640;&nbsp;删除</i></a>                    
                 </div>
-            </div>
-           
+            </div>           
         </div>
     </div>
     <div class="layui-col-md12">
-        <table class="layui-table" lay-size="sm">
-        <colgroup>
-            <col width="5%">
-            <col width="15%">
-            <col width="10%">
-            <col width="5%">
-            <col width="17.5%">
-            <col width="17.5%">
-            <col width="15%">
-            <col width="15%">
-        </colgroup>
-        <thead>
-        <tr>
-            <th bgcolor="d3eaef"></th>
-            <th bgcolor="d3eaef"><div align="center">学号</div></th>
-            <th bgcolor="d3eaef"><div align="center">姓名</div></th>
-            <th bgcolor="d3eaef"><div align="center">性别</div></th>
-            <th bgcolor="d3eaef"><div align="center">院系</div></th>
-            <th bgcolor="d3eaef"><div align="center">专业</div></th>
-            <th bgcolor="d3eaef"><div align="center">出生日期</div></th>
-            <th bgcolor="d3eaef"><div align="center">操作</div></th>
-        </tr>
-        </thead>
-        <tbody>
-        <%
-        Admin ad = new Admin();
-        ArrayList list = ad.selectStudentInfo();
-        int count = list.size();
-        pageCount = (count % limit == 0) ? (count / limit) : (count / limit + 1);
-        dateCount = list.size();
-        //System.out.println(request.getParameter("curPageNum"));
-        String temp = request.getParameter("curPageNum");
-        if (temp == null){
-        	curPageNum = 0;
-        } else {
-        	curPageNum = Integer.parseInt(temp);
-        }
-        if (curPageNum < 0){
-        	curPageNum = 0;
-        } else if (curPageNum >= pageCount){
-        	curPageNum = pageCount - 1;
-        }
-        //System.out.println(curPageNum);
-        for (int i = curPageNum * limit; i < dateCount && i < (curPageNum + 1) * limit; i++){
-        	Student stu = (Student)list.get(i);
-        %>
-        <tr>
-            <td>
-                <div align="center">
-                    <input type="checkbox" name="selectGroup" value="<%= stu.getsSno()%>"/>
-                </div>
-            </td>
-            <td><div align="center"><%= stu.getsSno()%></div></td>
-            <td><div align="center"><%= stu.getsName()%></div></td>
-            <td><div align="center"><%= stu.getsSex()%></div></td>
-            <td><div align="center">墨家</div></td>
-            <td><div align="center">巨子</div></td>
-            <td><div align="center"><%= stu.getsBirthday()%></div></td>
-            <td><div align="center"><a href="<%=basePath %>viewDetail?sSno=<%= stu.getsSno()%>">查看</a> | <a href="singleStudentInfo.jsp?sSno=<%= stu.getsSno()%>">修改</a> | <a href="singleStudentInfo.jsp?sSno=<%= stu.getsSno()%>">删除</a></div></td>
-        </tr>
-        <%} %>
-        <!--<tr>-->
-            <!--<td height="20" bgcolor="#FFFFFF">-->
-                <!--<div align="center">-->
-                    <!--<input type="checkbox" name="selectGroup" value="1234120120"/>-->
-                <!--</div>-->
-            <!--</td>-->
-            <!--<td><div align="center">1234120120</div></td>-->
-            <!--<td><div align="center">天明</div></td>-->
-            <!--<td><div align="center">男</div></td>-->
-            <!--<td><div align="center">墨家</div></td>-->
-            <!--<td><div align="center">巨子</div></td>-->
-            <!--<td><div align="center">2017-10-2</div></td>-->
-            <!--<td><div align="center">删除 | 查看</div></td>-->
-        <!--</tr>-->
-        </tbody>
-    </table>
-    </form>
-    <div class="layui-col-md12">
-	    <div class="layui-row">
-	    	<div class="layui-col-md4" align="left">
-	    		<div class="layui-btn-group">    
-			     	<a href="studentList.jsp?curPageNum=0" class="layui-btn layui-btn-primary layui-btn-sm">首页</a>
-				    <a href="studentList.jsp?curPageNum=<%if (curPageNum <= 0){curPageNum = 0;out.print(curPageNum);}else {out.print(curPageNum - 1);}%>" 
-				    class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon">&#xe65a;上一页</i></a>
-				    <a href="studentList.jsp?curPageNum=<%if (curPageNum >= pageCount - 1){curPageNum = pageCount - 1;out.print(curPageNum);}else {out.print(curPageNum + 1);}%>" 
-				    class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon">下一页&#xe65b;</i></a>
-				    <a href="studentList.jsp?curPageNum=<%= pageCount - 1%>" class="layui-btn layui-btn-primary layui-btn-sm">末页</a>
-		  		</div>
-	    	</div>
-	    	<!--
-	    	<div class="layui-col-md4 layui-col-md-offset4" align="right">
-	    		共<%=pageCount %>页 <%=dateCount %>名学生
-	    	</div>
-	    	 -->
-	    </div>
-  	</div>
+        <table id="studetnList" lay-filter="test"></table>
+        <script type="text/html" id="barDemo">
+            <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+            <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+        </script> 
     </div>
     <script src="plugins/jquery/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="plugins/layui/layui.js"></script>
     <script>
+	    layui.use('table', function(){
+	        var table = layui.table;
+    	  
+    	  //第一个实例
+    	    var talbleIns = table.render({
+	    	    elem: '#studetnList',
+	    	    //height: 315,
+	    	    url: '${url}administratorServlet?type=listStudentLimit',//数据接口	 
+	    	    cellMinWidth: 160,
+	    	    cols: [[ //表头
+	    	      {type: 'checkbox', width: 40},
+	    	      {field: 'sSno', title: '学号', sort: true, align: 'center', width: 110},
+	    	      {field: 'sName', title: '姓名', align: 'center', width: 110},
+	    	      {field: 'sSex', title: '性别', sort: true, align: 'center', width: 80},
+	    	      {field: 'dName', title: '院系', align: 'center'},
+	    	      {field: 'pName', title: '专业', align: 'center'},
+	    	      {field: 'sPolitical', title: '政治面貌', align: 'center', width: 100},
+	    	      {field: 'sBirthday', title: '出生日期', sort: true, align: 'center', width: 110},	
+	    	      {field: 'sIdentity', title: '身份证号', sort: true, align: 'center', width: 180}, 
+	    	      {field: 'sAddress', title: '家庭住址', align: 'center'}, 
+	    	      {field: 'sQQ', title: '企鹅号', align: 'center', width: 110}, 
+	    	      {field: 'sWchat', title: '微信号', align: 'center', width: 120},
+	    	      {title: '操作',fixed: 'right', align:'center', toolbar: '#barDemo', width: 160}
+	    	    ]],
+	    	    page: {
+                    layout: ['limit', 'prev', 'page', 'next', 'count', 'skip'],
+                    groups: 10
+                },
+                id:'idTest',
+    	    });
+    	  
+    	    table.on('tool(test)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+    	        var data = obj.data,       //获得当前行数据
+    	            layEvent = obj.event;  //获得 lay-event 对应的值
+    	        
+    	        //查看详情操作
+    	        if (layEvent === 'detail') {
+    	        	window.location.href = "${url}administratorServlet?type=getStudentBySno&toPage=studentDetial&sSno="+data.sSno;
+                    return ;
+    	        } 
+    	        
+    	        //删除操作
+    	        if (layEvent === 'del') {
+    	            layer.confirm('确定要删除吗？', function(index){
+    	            	   obj.del(); 
+    	            	   layer.close(index);
+    	            	   var url = "${url}administratorServlet?type=deleteStudent";
+    	            	   $.post(url,{"sSno":student.sSno}, function(message){
+    	            		   layer.msg(message);
+    	            		   talbleIns.reload({
+    	                           url: '${url}administratorServlet?type=listStudentLimit'
+    	                       });
+    	            	   }, "text");
+    	            	   });
+    	            return;
+    	        }
+    	        //编辑操作
+    	        if (layEvent === 'edit') {
+    	        	window.location.href = "${url}administratorServlet?type=getStudentBySno&toPage=editStudent&sSno="+data.sSno;   	          
+    	          return ;
+    	        }
+    	      });
+    	    
+
+    	    var $ = layui.$, active = {
+				getCheckData: function(){ //获取选中数据
+					var checkStatus = table.checkStatus('idTest'),
+					data = checkStatus.data;
+					//layer.alert(JSON.stringify(data));
+					if (data.length == 0){
+						layer.alert("请选择要删除的数据");
+						return ;
+					}
+					layer.confirm('确定要删除吗？', function(index){
+						layer.close(index);
+                       	for (var i = 0; i < data.length; i++){
+                            student = data[i];
+                            var url = "${url}administratorServlet?type=deleteStudent";
+                               $.post(url,{"sSno":student.sSno}, function(message){
+                            	   layer.msg(message);
+                                   talbleIns.reload({
+                                       url: '${url}administratorServlet?type=listStudentLimit'
+                                   });
+                               }, "text");
+                           }
+                        });
+				},
+				getCheckLength: function(){ //获取选中数目
+	    	        var checkStatus = table.checkStatus('idTest'),
+	    	        data = checkStatus.data;
+	    	        layer.msg('选中了：'+ data.length + ' 个');
+	    	    },
+				isAll: function(){ //验证是否全选
+					var checkStatus = table.checkStatus('idTest');
+					layer.msg(checkStatus.isAll ? '全选': '未全选')
+				}
+	        };
+    	    
+    	    $('.demoTable .layui-btn').on('click', function(){
+    	      var type = $(this).data('type');
+    	      active[type] ? active[type].call(this) : '';
+    	    });
+	    	  
+	    });
+	    
+	    /*
         function selectAll(){
             var checkBoxArr = document.getElementsByName("selectGroup");
             for (var i = 0; i < checkBoxArr.length; i++) {
@@ -171,8 +176,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             for (var i = 0; i < checkBoxArr.length; i++) {
                 checkBoxArr[i].checked = false;
             }
-        }
+        }*/
         
+        /*
         function del(){
         	var flag = false;
         	var checkBoxArr = document.getElementsByName("selectGroup");
@@ -187,7 +193,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         	}
         	alert("请选择你要删除的数据！");
         	return false;
-        }
+        }*/
     </script>
 </body>
 </html>
