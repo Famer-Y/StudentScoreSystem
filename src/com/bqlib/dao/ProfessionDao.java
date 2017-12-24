@@ -55,6 +55,7 @@ public class ProfessionDao {
 			profession.setpId(rs.getString("pId"));
 			profession.setpName(rs.getString("pName"));
 			profession.setdId(rs.getString("dId"));
+			listProfession.add(profession);
 		}
 		return listProfession;
 	}

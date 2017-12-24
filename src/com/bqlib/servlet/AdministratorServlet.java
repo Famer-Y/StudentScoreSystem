@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.bqlib.biz.AdministratorBiz;
+import com.bqlib.model.Department;
+import com.bqlib.model.Profession;
 import com.bqlib.model.Student;
 import com.bqlib.util.JsonDateValueProcessorUtil;
 
@@ -52,7 +54,7 @@ public class AdministratorServlet extends HttpServlet {
 		String type = request.getParameter("type");
 		if ("listStudentAll".equals(type)){
 		    listStudentAll(request, response);
-		    System.out.println("查询学生！！！");
+		    System.out.println("获取学生列表！！！");
 		    return ;
 		}
 		if ("addStudent".equals(type)){
@@ -77,12 +79,54 @@ public class AdministratorServlet extends HttpServlet {
 		}
 		if ("getStudentBySno".equals(type)) {
 		    getStudentBySno(request, response);
-            System.out.println("查看学生");
+            System.out.println("查看学生详情");
+            return ;
+        }
+		if ("listDepartment".equals(type)) {
+		    listDepartment(request, response);
+            System.out.println("获取院系列表");
+            return ;
+		}
+		if ("listProfessionByDepartment".equals(type)) {
+		    listProfessionByDepartment(request, response);
+            System.out.println("根据院系id获取专业");
             return ;
         }
 	}
 	
-	private void updateStudent(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void listProfessionByDepartment(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    String dId = request.getParameter("dId");
+	    PrintWriter out = response.getWriter();
+	    if (null == dId || "".equals(dId)) {
+	        return ;
+	    }
+        try{
+            List<Profession> professionList = adminBiz.listProfessionByDepartment(dId);
+            JSONArray jsonArr = JSONArray.fromObject(professionList);
+            out.write(jsonArr.toString());
+            out.flush();
+            out.close();         
+        } catch (Exception e){
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
+	}
+	
+	protected void listDepartment(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    PrintWriter out = response.getWriter();
+        try{
+            List<Department> departmentList = adminBiz.listDeparment();
+            JSONArray jsonArr = JSONArray.fromObject(departmentList);
+            out.write(jsonArr.toString());
+            out.flush();
+            out.close();           
+        } catch (Exception e){
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
+	}
+	
+	protected void updateStudent(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    
         PrintWriter out = response.getWriter();
 	    try{
@@ -149,7 +193,7 @@ public class AdministratorServlet extends HttpServlet {
 	}
 	    
 	
-	private void getStudentBySno(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void getStudentBySno(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    
 	    try {
     	    String sSno = request.getParameter("sSno");
@@ -185,7 +229,7 @@ public class AdministratorServlet extends HttpServlet {
 	    }
 	}
 	
-	private void deleteStudent(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void deleteStudent(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    PrintWriter out = response.getWriter();
 	    try {
 	        String sSno = request.getParameter("sSno");
@@ -210,7 +254,7 @@ public class AdministratorServlet extends HttpServlet {
 	    }
 	}
 	
-	private void addStudent(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void addStudent(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    
 	    PrintWriter out = response.getWriter();
 	    try{
@@ -278,7 +322,7 @@ public class AdministratorServlet extends HttpServlet {
         
 	}
 	
-    private void listStudentLimit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void listStudentLimit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
         PrintWriter out = response.getWriter();
         try {
@@ -314,7 +358,6 @@ public class AdministratorServlet extends HttpServlet {
 	            out.close();
 	            return ;
 	        }
-
             JSONArray jsonArr = JSONArray.fromObject(listStudent, jsonConfig);
 
             json.put("code", 0);
@@ -332,7 +375,7 @@ public class AdministratorServlet extends HttpServlet {
 	    }
 	}
 	
-    private void listStudentAll(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void listStudentAll(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
         try {
             List<Student> listStudent = adminBiz.listStudentAll();

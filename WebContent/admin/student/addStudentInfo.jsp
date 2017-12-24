@@ -5,6 +5,7 @@ String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 pageContext.setAttribute("url", basePath);
 %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -122,22 +123,16 @@ pageContext.setAttribute("url", basePath);
 							<div class="layui-inline">
 								<label class="layui-form-label">院系<span style="color: red">*</span></label>
 								<div class="layui-input-inline">
-									<select name="dId" lay-verify="department">
-										<option value="">请选择院系</option>
-										<option value="11">信息工程学院</option>
-										<option value="12">建筑工程学院</option>
-										<option value="13">动画学院</option>
+									<select name="dId" lay-verify="department" lay-filter="department" id="department">	
+									    									
 									</select>
 								</div>
 							</div>
 							<div class="layui-inline">
 								<label class="layui-form-label">专业<span style="color: red">*</span></label>
 								<div class="layui-input-inline">
-									<select name="pId" lay-verify="profession">
-										<option value="">请选择专业</option>
-										<option value="1101">软件工程</option>
-										<option value="1102">计算机科学与技术</option>
-										<option value="1103">动画专业</option>
+									<select name="pId" lay-verify="profession" lay-filter="profession" id="profession">
+									
 									</select>
 								</div>
 							</div>
@@ -214,14 +209,13 @@ pageContext.setAttribute("url", basePath);
 					<div class="layui-col-md4 layui-col-md-offset4">
 						<div class="layui-form-item">
 							<div class="layui-input-block">
-								<button class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+								<button class="layui-btn" lay-submit="" lay-filter="demo1">保存</button>
 								<button type="reset" class="layui-btn layui-btn-primary" id="reset">重置</button>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-
 		</div>
 	</form>
 </div>
@@ -252,7 +246,7 @@ pageContext.setAttribute("url", basePath);
                     return '院系不能为空';
                 }
             },
-            speciality: function (value) {
+            profession: function (value) {
                 if(value.length < 1){
                     return '专业不能为空';
                 }
@@ -290,6 +284,20 @@ pageContext.setAttribute("url", basePath);
         	},"text");       	
             return false;
         });
+       
+        //联动二级
+        form.on('select(department)', function(data) {
+        	var url = "${url}administratorServlet?type=listProfessionByDepartment";
+            $.post(url,{"dId":data.value},function(result){
+                var info = "<option value=''>请选择专业</option>";
+                for (var i = 0; i < result.length; i++) {
+                    var obj = result[i];
+                    info += "<option value='" + obj.pId + "'>" + obj.pName + "</option>";                  
+                }
+                $("#profession").html(info);
+                form.render(); //重新渲染表单               
+           },"json");
+        });
     });
 
     layui.use('laydate', function(){
@@ -300,10 +308,30 @@ pageContext.setAttribute("url", basePath);
             elem: '#sBirthday' //指定元素
         });
     });
+    
+    //联动一级
+    function listDepartment() {
+    	 var url = "${url}administratorServlet?type=listDepartment";
+         $.post(url,null,function(data){
+             var info = "<option value=''>请选择院系</option>";
+             for (var i = 0; i < data.length; i++) {
+                 var obj = data[i];
+                 info += "<option value='" + obj.dId + "'>" + obj.dName + "</option>";                
+             }
+             $("#department").html(info);
+             layui.use('form', function(){
+            	   var form = layui.form;
+            	   form.render();
+            	  });
+         },"json");
+    }
 
     //当文档加载完毕后立即执行
     $(document).ready(function(){
-        $("#upload").val = $("#pic")[0].src;
+    	listDepartment();
+      	$("#profession").change(function(){
+      	    alert("文本已被修改");
+      	});
     });
 
     $(function() {

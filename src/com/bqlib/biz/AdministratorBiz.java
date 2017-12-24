@@ -142,4 +142,29 @@ public class AdministratorBiz {
         DbUtil.close();
         return num;
     }
+    
+    /**
+     * 获取院系列表
+     * @return
+     * @throws Exception
+     */
+    public List<Department> listDeparment() throws Exception{
+        Connection conn = DbUtil.getConn();
+        List<Department> departmentList = departmentDao.listDeparment();
+        DbUtil.close();
+        return departmentList;
+    }
+    
+    /**
+     * 根据院系id获取专业列表
+     * @param dId
+     * @return
+     * @throws Exception
+     */
+    public List<Profession> listProfessionByDepartment(String dId) throws Exception{
+        Connection conn = DbUtil.getConn();
+        List<Profession> professionList = professionDao.listProfessionByDepartment(dId);
+        DbUtil.close();
+        return professionList;
+    }
 }
