@@ -3,6 +3,7 @@ pageEncoding="utf-8"%>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+pageContext.setAttribute("url", basePath);
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -38,7 +39,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </head>
 <body>
 <div class="layui-container" style="margin-top: 10px">
-	<form action="<%=basePath %>administratorServlet?type=addStudent" class="layui-form" method="post">
+<!-- <%//=basePath %>administratorServlet?type=addStudent-->
+	<form action="" class="layui-form" method="post">
 		<div class="layui-row">
 			<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
 				<legend>新增学生信息</legend>
@@ -213,7 +215,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<div class="layui-form-item">
 							<div class="layui-input-block">
 								<button class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
-								<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+								<button type="reset" class="layui-btn layui-btn-primary" id="reset">重置</button>
 							</div>
 						</div>
 					</div>
@@ -278,10 +280,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
         //监听提交
         form.on('submit(demo1)', function(data) {
-            layer.alert(JSON.stringify(data.field), {
-                title: '最终的提交信息'
-            });
-            return true;
+        	//layer.alert(JSON.stringify(data.field), {
+        	  //  title: '最终的提交信息'
+            //});
+        	var url = "${url}administratorServlet?type=addStudent";
+        	$.post(url,data.field,function(result){
+        		layer.msg(result);
+        		$("#reset").trigger("click");
+        	},"text");       	
+            return false;
         });
     });
 

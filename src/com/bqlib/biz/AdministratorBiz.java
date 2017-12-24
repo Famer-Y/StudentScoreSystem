@@ -1,5 +1,6 @@
 package com.bqlib.biz;
 
+import java.sql.Connection;
 import java.util.List;
 
 import com.bqlib.dao.DepartmentDao;
@@ -21,7 +22,8 @@ public class AdministratorBiz {
      * @throws Exception
      */
     public List<Student> listStudentAll() throws Exception{
-        DbUtil.getConn();
+        
+        Connection conn = DbUtil.getConn();
         List<Student> listStudent = studentDao.listStudentAll();
         for (Student student : listStudent){
             Department department = departmentDao.getDeparmentById(student.getdId());
@@ -37,17 +39,26 @@ public class AdministratorBiz {
         return listStudent;
     }
     
+    /**
+     * 按学号查询学生
+     * @param sSno
+     * @return
+     * @throws Exception
+     */
     public Student getStudentBySno(String sSno) throws Exception{
-        DbUtil.getConn();
+        
+        Connection conn = DbUtil.getConn();
         Student student = studentDao.getStudentBySno(sSno);
-        Department department = departmentDao.getDeparmentById(student.getdId());
-        if (department != null){
-            student.setdName(department.getdName());
-        }           
-        Profession profession = professionDao.getProfessionById(student.getpId());
-        if (profession != null){
-            student.setpName(profession.getpName()); 
-        }                
+        if (student != null) {
+            Department department = departmentDao.getDeparmentById(student.getdId());
+            if (department != null){
+                student.setdName(department.getdName());
+            }           
+            Profession profession = professionDao.getProfessionById(student.getpId());
+            if (profession != null){
+                student.setpName(profession.getpName()); 
+            }                
+        }
         DbUtil.close();
         return student;
     }
@@ -61,7 +72,7 @@ public class AdministratorBiz {
      */
     public List<Student> listStudentLimit(Integer start, Integer size) throws Exception{
         
-        DbUtil.getConn();
+        Connection conn = DbUtil.getConn();
         List<Student> listStudent = studentDao.listStudentLimit(start, size);
         for (Student student : listStudent){
             Department department = departmentDao.getDeparmentById(student.getdId());
@@ -85,7 +96,7 @@ public class AdministratorBiz {
      */
     public int addStudent(Student student) throws Exception{
         
-        DbUtil.getConn();
+        Connection conn = DbUtil.getConn();
         int num = studentDao.addStudent(student);
         DbUtil.close();
         return num;
@@ -98,7 +109,7 @@ public class AdministratorBiz {
      */
     public int countStudent() throws Exception{
         
-        DbUtil.getConn();
+        Connection conn = DbUtil.getConn();
         int num = studentDao.countStudent();
         DbUtil.close();
         return num;
@@ -112,8 +123,22 @@ public class AdministratorBiz {
      */
     public int deleteStudent(String sSno) throws Exception {
         
-        DbUtil.getConn();
+        Connection conn = DbUtil.getConn();
         int num = studentDao.deleteStudentById(sSno);
+        DbUtil.close();
+        return num;
+    }
+    
+    /**
+     * 更新学生
+     * @param student
+     * @return
+     * @throws Exception
+     */
+    public int updateStudent(Student student) throws Exception{
+        
+        Connection conn = DbUtil.getConn();
+        int num = studentDao.updateStudent(student);
         DbUtil.close();
         return num;
     }

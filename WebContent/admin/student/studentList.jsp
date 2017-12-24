@@ -1,11 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	import = "java.sql.*, com.bqlib.service.*, com.bqlib.model.*, 
+	import = "java.sql.*, com.bqlib.model.*, 
 	java.util.Date, java.util.ArrayList"
     pageEncoding="UTF-8"%>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
-request.getSession().setAttribute("url", basePath);
+pageContext.setAttribute("url", basePath);
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -102,16 +102,16 @@ request.getSession().setAttribute("url", basePath);
     	        //删除操作
     	        if (layEvent === 'del') {
     	            layer.confirm('确定要删除吗？', function(index){
-    	            	   obj.del(); 
-    	            	   layer.close(index);
-    	            	   var url = "${url}administratorServlet?type=deleteStudent";
-    	            	   $.post(url,{"sSno":student.sSno}, function(message){
-    	            		   layer.msg(message);
-    	            		   talbleIns.reload({
-    	                           url: '${url}administratorServlet?type=listStudentLimit'
-    	                       });
-    	            	   }, "text");
-    	            	   });
+	            	   obj.del(); 
+	            	   layer.close(index);
+	            	   var url = "${url}administratorServlet?type=deleteStudent";
+	            	   $.post(url,{"sSno":data.sSno}, function(message){
+	            		   layer.msg(message);
+	            		   talbleIns.reload({
+	                           url: '${url}administratorServlet?type=listStudentLimit'
+	                       });
+	            	   }, "text");	            	   
+    	            });
     	            return;
     	        }
     	        //编辑操作
@@ -119,8 +119,7 @@ request.getSession().setAttribute("url", basePath);
     	        	window.location.href = "${url}administratorServlet?type=getStudentBySno&toPage=editStudent&sSno="+data.sSno;   	          
     	          return ;
     	        }
-    	      });
-    	    
+    	      });   	    
 
     	    var $ = layui.$, active = {
 				getCheckData: function(){ //获取选中数据
@@ -133,17 +132,19 @@ request.getSession().setAttribute("url", basePath);
 					}
 					layer.confirm('确定要删除吗？', function(index){
 						layer.close(index);
+						console.log(data);
                        	for (var i = 0; i < data.length; i++){
-                            student = data[i];
+                            var student = data[i];
                             var url = "${url}administratorServlet?type=deleteStudent";
                                $.post(url,{"sSno":student.sSno}, function(message){
-                            	   layer.msg(message);
-                                   talbleIns.reload({
+                            	   layer.msg(message);  
+                            	   talbleIns.reload({
                                        url: '${url}administratorServlet?type=listStudentLimit'
                                    });
                                }, "text");
-                           }
-                        });
+                        }                      	
+                    });
+					
 				},
 				getCheckLength: function(){ //获取选中数目
 	    	        var checkStatus = table.checkStatus('idTest'),

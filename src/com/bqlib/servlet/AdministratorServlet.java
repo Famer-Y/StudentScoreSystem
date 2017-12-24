@@ -60,6 +60,11 @@ public class AdministratorServlet extends HttpServlet {
 		    System.out.println("添加学生！！！");
 		    return ;
 		}
+		if ("updateStudent".equals(type)){
+		    updateStudent(request, response);
+            System.out.println("修改学生！！！");
+            return ;
+        }
 		if ("listStudentLimit".equals(type)) {
 		    listStudentLimit(request, response);
 		    System.out.println("获取一页学生");
@@ -76,6 +81,73 @@ public class AdministratorServlet extends HttpServlet {
             return ;
         }
 	}
+	
+	private void updateStudent(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    
+        PrintWriter out = response.getWriter();
+	    try{
+            String sSno = request.getParameter("sSno");
+            Student isExist = adminBiz.getStudentBySno(sSno);
+            if (isExist != null) {
+                out.write("该学号已存在");
+                return ;
+            }
+            String sPhotoPath = request.getParameter("sPhotoPath");
+            String sName = request.getParameter("sName");
+            String sSex = request.getParameter("sSex");
+            String sPolitical = request.getParameter("sPolitical");
+            String sBirthday = request.getParameter("sBirthday");
+            String dId = request.getParameter("dId");
+            String pId = request.getParameter("pId");
+            String sIdentity = request.getParameter("sIdentity");
+            String sAddress = request.getParameter("sAddress");
+            String sQQ = request.getParameter("sQQ");
+            String sWchat = request.getParameter("sWchat");
+            String sPhone = request.getParameter("sPhone");
+            String sEmail = request.getParameter("sEmail");
+            
+            if (sPhotoPath.equals("")){
+                sPhotoPath = "uploadImg/default.jpg";
+            } else {
+                sPhotoPath = "uploadImg/" + sPhotoPath; 
+            }            
+    
+            //格式化表单中的时间
+            SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+            Date birthday = null;
+            birthday = sdf1.parse(sBirthday);     
+            
+            Student student = new Student();
+            student.setsPhotoPath(sPhotoPath);
+            student.setsSno(sSno);
+            student.setsPassword(sSno);
+            student.setsName(sName);
+            student.setsSex(sSex);
+            student.setsPolitical(sPolitical);
+            student.setsBirthday(birthday);
+            student.setdId(dId);
+            student.setpId(pId);
+            student.setsIdentity(sIdentity);
+            student.setsAddress(sAddress);
+            student.setsQQ(sQQ);
+            student.setsWchat(sWchat);
+            student.setsPhone(sPhone);
+            student.setsEmail(sEmail);
+            int num = adminBiz.updateStudent(student);            
+            
+            if (num > 0) {
+                out.write("修改成功！！");
+            } else {
+                out.write("修改失败！！");
+            }
+            out.flush();
+            out.close();           
+        } catch (Exception e){
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
+	}
+	    
 	
 	private void getStudentBySno(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    
@@ -114,7 +186,7 @@ public class AdministratorServlet extends HttpServlet {
 	}
 	
 	private void deleteStudent(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	    
+	    PrintWriter out = response.getWriter();
 	    try {
 	        String sSno = request.getParameter("sSno");
 	        
@@ -122,8 +194,7 @@ public class AdministratorServlet extends HttpServlet {
 	            return ;
 	        }
 	        
-	        int num = adminBiz.deleteStudent(sSno);
-	        PrintWriter out = response.getWriter();
+	        int num = adminBiz.deleteStudent(sSno);	        
                          
 	        if (num > 0) {
 	            out.write("删除成功！！");
@@ -134,15 +205,22 @@ public class AdministratorServlet extends HttpServlet {
             out.close();
 	    } catch (Exception e) {
 	        e.printStackTrace();
-	        response.sendRedirect("error.jsp");
+	        out.write("删除失败！！");
+	        //response.sendRedirect("error.jsp");
 	    }
 	}
 	
 	private void addStudent(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    
+	    PrintWriter out = response.getWriter();
 	    try{
     	    Student student = new Student();
             String sSno = request.getParameter("sSno");
+            Student isExist = adminBiz.getStudentBySno(sSno);
+            if (isExist != null) {
+                out.write("该学号已存在");
+                return ;
+            }
             String sPhotoPath = request.getParameter("sPhotoPath");
             String sName = request.getParameter("sName");
             String sSex = request.getParameter("sSex");
@@ -162,18 +240,12 @@ public class AdministratorServlet extends HttpServlet {
             } else {
                 sPhotoPath = "uploadImg/" + sPhotoPath; 
             }
-            
     
             //格式化表单中的时间
             SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
             Date birthday = null;
-            try {
-                birthday = sdf1.parse(sBirthday);
-            } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            
+            birthday = sdf1.parse(sBirthday);
+                       
             student.setsPhotoPath(sPhotoPath);
             student.setsSno(sSno);
             student.setsPassword(sSno);
@@ -189,16 +261,26 @@ public class AdministratorServlet extends HttpServlet {
             student.setsWchat(sWchat);
             student.setsPhone(sPhone);
             student.setsEmail(sEmail);
-            adminBiz.addStudent(student);
+            int num = adminBiz.addStudent(student);
+            
+            if (num > 0) {
+                out.write("保存成功！！");
+            } else {
+                out.write("保存失败！！");
+            }
+            out.flush();
+            out.close();
+            
 	    } catch (Exception e){
 	        e.printStackTrace();
-	        response.sendRedirect("error.jsp");
+	        out.write("保存失败！！");
 	    }
         
 	}
 	
     private void listStudentLimit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	    
+        
+        PrintWriter out = response.getWriter();
         try {
 	        String keyword = request.getParameter("keyword");
 	        String pIndex = request.getParameter("page"); //获取数据表格请求的页数
@@ -221,17 +303,25 @@ public class AdministratorServlet extends HttpServlet {
 	                start = (index - 1) * pageSize;
 	            }	            
 	        }
-	        List<Student> listStudent = adminBiz.listStudentLimit(start, pageSize);
-	        
 	        JsonConfig jsonConfig = new JsonConfig();  
             jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessorUtil());
-            JSONArray jsonArr = JSONArray.fromObject(listStudent, jsonConfig);
             JSONObject json = new JSONObject();
+            
+	        List<Student> listStudent = adminBiz.listStudentLimit(start, pageSize);	
+	        if (null == listStudent) {
+	            out.write("");
+	            out.flush();
+	            out.close();
+	            return ;
+	        }
+
+            JSONArray jsonArr = JSONArray.fromObject(listStudent, jsonConfig);
+
             json.put("code", 0);
             json.put("msg", "");
             json.put("count", countStudentAll); 
             json.put("data", jsonArr);
-            PrintWriter out = response.getWriter();
+
             out.write(json.toString());
             out.flush();
             out.close();
