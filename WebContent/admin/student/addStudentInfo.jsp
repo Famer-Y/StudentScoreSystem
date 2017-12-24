@@ -29,7 +29,7 @@ pageContext.setAttribute("url", basePath);
 			font-size: 12px;
 		}
 
-		#pic{
+		.pic{
 			width:130px;
 			height:130px;
 			border-radius:50% ;
@@ -41,7 +41,7 @@ pageContext.setAttribute("url", basePath);
 <body>
 <div class="layui-container" style="margin-top: 10px">
 <!-- <%//=basePath %>administratorServlet?type=addStudent-->
-	<form action="" class="layui-form" method="post">
+	<form action="" class="layui-form" method="post" id="addinfomation">
 		<div class="layui-row">
 			<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
 				<legend>新增学生信息</legend>
@@ -69,9 +69,13 @@ pageContext.setAttribute("url", basePath);
 					<div class="layui-col-md2">
 						<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
 							<legend>照片</legend>
-						</fieldset>
-						<img id="pic" src="uploadImg/default.jpg" >
-						<input id="upload" name="sPhotoPath" accept="uploadImg/*" type="file" style="display: none"/>
+						</fieldset>					
+						<div class="layui-upload" align="center">					    
+						    <div class="layui-upload-list" id="showPhoto">
+						         
+						    </div>
+						    <button type="button" class="layui-btn" id="upload" >照片上传</button>
+						</div>
 					</div>
 					<div class="layui-col-md10">
 						<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
@@ -222,6 +226,30 @@ pageContext.setAttribute("url", basePath);
 <script src="plugins/jquery/jquery-3.2.1.min.js"></script>
 <script type="text/javascript" src="plugins/layui/layui.js"></script>
 <script>
+
+	layui.use(['upload'],function(){
+	    var upload = layui.upload;
+	    upload.render({
+	       elem: '#upload',
+	       url: '${url}uploadServlet?type=uploadImage',
+	       accept:'images',
+	       exts:'jpg|png|gif|bmp|jpeg',
+	       size:2048,
+	       before: function(obj){
+	            //预读本地文件示例，不支持ie8
+	            obj.preview(function(index, file, result){
+	                $('#showPhoto').html('<img class="pic" src="'
+	                        + result +'" alt="'+ file.name 
+	                        +'" class="layui-upload-img upload-img" id="clearPhoto">');
+	            });
+	        },
+	        done: function(res){
+	            $("#addinfomation").append("<input type='hidden' name='sPhotoPath' value='"
+	                    +res.imgurl+"'>");
+	        }
+	    });
+	})
+
     layui.use(['form', 'layer'], function() {
         var form = layui.form,
             layer = layui.layer;
@@ -281,6 +309,7 @@ pageContext.setAttribute("url", basePath);
         	$.post(url,data.field,function(result){
         		layer.msg(result);
         		$("#reset").trigger("click");
+        		$("#clearPhoto").hide();
         	},"text");       	
             return false;
         });
@@ -333,32 +362,6 @@ pageContext.setAttribute("url", basePath);
       	    alert("文本已被修改");
       	});
     });
-
-    $(function() {
-        $("#pic").click(function () {
-            $("#upload").click(); //隐藏了input:file样式后，点击头像就可以本地上传
-            $("#upload").on("change",function(){
-                var objUrl = getObjectURL(this.files[0]) ; //获取图片的路径，该路径不是图片在本地的路径
-                if (objUrl) {
-                    $("#pic").attr("src", objUrl) ; //将图片路径存入src中，显示出图片
-                }
-            });
-        });
-    });
-
-    //建立一個可存取到該file的url
-    function getObjectURL(file) {
-        var url = null ;
-        if (window.createObjectURL!=undefined) { // basic
-            url = window.createObjectURL(file) ;
-        } else if (window.URL!=undefined) { // mozilla(firefox)
-            url = window.URL.createObjectURL(file) ;
-        } else if (window.webkitURL!=undefined) { // webkit or chrome
-            url = window.webkitURL.createObjectURL(file) ;
-        }
-        return url ;
-    }
-
 </script>
 </body>
 </html>

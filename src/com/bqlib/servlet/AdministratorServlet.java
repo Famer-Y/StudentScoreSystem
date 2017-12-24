@@ -136,7 +136,7 @@ public class AdministratorServlet extends HttpServlet {
                 out.write("该学号已存在");
                 return ;
             }
-            String sPhotoPath = request.getParameter("sPhotoPath");
+            String sPhotoPath = request.getParameter("imgs");
             String sName = request.getParameter("sName");
             String sSex = request.getParameter("sSex");
             String sPolitical = request.getParameter("sPolitical");
@@ -279,10 +279,10 @@ public class AdministratorServlet extends HttpServlet {
             String sPhone = request.getParameter("sPhone");
             String sEmail = request.getParameter("sEmail");
             
-            if (sPhotoPath.equals("")){
-                sPhotoPath = "uploadImg/default.jpg";
+            if (sPhotoPath.equals("") || null == sPhotoPath){
+                sPhotoPath = "default.jpg";
             } else {
-                sPhotoPath = "uploadImg/" + sPhotoPath; 
+                sPhotoPath = sPhotoPath; 
             }
     
             //格式化表单中的时间

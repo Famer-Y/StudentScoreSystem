@@ -27,13 +27,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			font-size: 12px;
 		}
 
-		#pic{
-			width:130px;
-			height:130px;
-			border-radius:50% ;
-			margin:20px auto;
-			cursor: pointer;
-		}
+		.pic{
+            width:130px;
+            height:130px;
+            border-radius:50% ;
+            margin:20px auto;
+            cursor: pointer;
+        }
 	</style>
 </head>
 <body>
@@ -67,7 +67,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
 							<legend>照片</legend>
 						</fieldset>
-						<img id="pic" src="uploadImg/default.jpg" >
+						<div class="layui-upload" align="center">                       
+                            <div class="layui-upload-list" id="showPhoto">
+                                 <img class="pic" src="photo/${student.sPhotoPath }" alt="" class="layui-upload-img upload-img">
+                            </div>
+                        </div> >
 					</div>
 					<div class="layui-col-md10">
 						<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
