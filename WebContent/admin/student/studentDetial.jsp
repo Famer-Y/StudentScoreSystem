@@ -17,7 +17,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<meta name="format-detection" content="telephone=no">
 
 	<!--引入 luyi 插件-->
-	<link rel="stylesheet" href="plugins/layui/css/layui.css" media="all" />
+	<link rel="stylesheet" href="../plugins/layui/css/layui.css" media="all" />
 	<style>
 		body {
 			margin-left: 3px;
@@ -239,8 +239,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</div>
 	</form>
 </div>
-<script src="plugins/jquery/jquery-3.2.1.min.js"></script>
-<script type="text/javascript" src="plugins/layui/layui.js"></script>
+<script src="../plugins/jquery/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="../plugins/layui/layui.js"></script>
 <script>
     layui.use(['form', 'layer'], function() {
         var form = layui.form,
