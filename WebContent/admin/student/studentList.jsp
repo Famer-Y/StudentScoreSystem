@@ -41,7 +41,7 @@ pageContext.setAttribute("url", basePath);
             <div class="layui-col-md4 layui-col-md-offset4">
                 <div align="right" class="demoTable">                	
                    	<a class="layui-btn layui-btn-xs color-black" href="addStudentInfo.jsp" ><i class="layui-icon">&#xe654;&nbsp;新增</i></a>
-                    <a class="layui-btn layui-btn-xs color-black"><i class="layui-icon">&#xe642;&nbsp;修改</i></a>
+                    <a class="layui-btn layui-btn-xs color-black" data-type="editStudent"><i class="layui-icon">&#xe642;&nbsp;编辑</i></a>
                     <a class="layui-btn layui-btn-xs color-black" data-type="getCheckData"><i class="layui-icon">&#xe640;&nbsp;删除</i></a>                    
                 </div>
             </div>           
@@ -127,7 +127,7 @@ pageContext.setAttribute("url", basePath);
 					data = checkStatus.data;
 					//layer.alert(JSON.stringify(data));
 					if (data.length == 0){
-						layer.alert("请选择要删除的数据");
+						layer.alert("请选择要删除的学生");
 						return ;
 					}
 					layer.confirm('确定要删除吗？', function(index){
@@ -143,8 +143,20 @@ pageContext.setAttribute("url", basePath);
                                    });
                                }, "text");
                         }                      	
-                    });
-					
+                    });					
+				},
+				editStudent: function(){
+					var checkStatus = table.checkStatus('idTest'),
+					data = checkStatus.data;
+					if (data.length <= 0){
+                        layer.alert("请选择要编辑的学生");
+                        return ;
+                    }
+					if (data.length > 1){
+                        layer.alert("一次只能编辑一个学生");
+                        return ;
+                    }
+					window.location.href = "${url}administratorServlet?type=getStudentBySno&toPage=editStudent&sSno="+data[0].sSno;
 				},
 				getCheckLength: function(){ //获取选中数目
 	    	        var checkStatus = table.checkStatus('idTest'),

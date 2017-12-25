@@ -42,6 +42,9 @@ pageContext.setAttribute("url", basePath);
 <div class="layui-container" style="margin-top: 10px">
 <!-- <%//=basePath %>administratorServlet?type=addStudent-->
 	<form action="" class="layui-form" method="post" id="addinfomation">
+	   <div id="hiddenInput">
+	   <input type="hidden" name="sPhotoPath" value="">
+	   </div>
 		<div class="layui-row">
 			<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
 				<legend>新增学生信息</legend>
@@ -99,10 +102,8 @@ pageContext.setAttribute("url", basePath);
 							<div class="layui-inline">
 								<label class="layui-form-label">政治面貌<span style="color: red">*</span></label>
 								<div class="layui-input-inline">
-									<select name="sPolitical" lay-filter="political" lay-verify="political">
-										<option value=""></option>
-										<option value="团员">团员</option>
-										<option value="党员">党员</option>
+									<select name="sPolitical" lay-filter="political" lay-verify="political" id="political">
+
 									</select>
 								</div>
 							</div>
@@ -244,7 +245,7 @@ pageContext.setAttribute("url", basePath);
 	            });
 	        },
 	        done: function(res){
-	            $("#addinfomation").append("<input type='hidden' name='sPhotoPath' value='"
+	            $("#hiddenInput").html("<input type='hidden' name='sPhotoPath' value='"
 	                    +res.imgurl+"'>");
 	        }
 	    });
@@ -318,7 +319,7 @@ pageContext.setAttribute("url", basePath);
         form.on('select(department)', function(data) {
         	var url = "${url}administratorServlet?type=listProfessionByDepartment";
             $.post(url,{"dId":data.value},function(result){
-                var info = "<option value=''>请选择专业</option>";
+                var info = "<option value=''>专业</option>";
                 for (var i = 0; i < result.length; i++) {
                     var obj = result[i];
                     info += "<option value='" + obj.pId + "'>" + obj.pName + "</option>";                  
@@ -338,11 +339,11 @@ pageContext.setAttribute("url", basePath);
         });
     });
     
-    //联动一级
+    //初始化院系列表
     function listDepartment() {
     	 var url = "${url}administratorServlet?type=listDepartment";
          $.post(url,null,function(data){
-             var info = "<option value=''>请选择院系</option>";
+             var info = "<option value=''>院系</option>";
              for (var i = 0; i < data.length; i++) {
                  var obj = data[i];
                  info += "<option value='" + obj.dId + "'>" + obj.dName + "</option>";                
@@ -354,13 +355,28 @@ pageContext.setAttribute("url", basePath);
             	  });
          },"json");
     }
+    
+    //初始化政治面貌列表
+    function listPolitical() {
+        var url = "${url}administratorServlet?type=listPolitical";
+        $.post(url,null,function(result){
+            var info = "<option value=''>政治面貌</option>";
+            for (var i = 0; i < result.length; i++) {
+                var obj = result[i];     
+                info += "<option value='" + obj.name + "'>" + obj.name + "</option>";                                    
+            }
+            $("#political").html(info);
+            layui.use('form', function(){
+                var form = layui.form;
+                form.render();
+               });            
+       },"json");
+    }
 
     //当文档加载完毕后立即执行
     $(document).ready(function(){
     	listDepartment();
-      	$("#profession").change(function(){
-      	    alert("文本已被修改");
-      	});
+    	listPolitical();
     });
 </script>
 </body>

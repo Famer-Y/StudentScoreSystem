@@ -71,7 +71,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                             <div class="layui-upload-list" id="showPhoto">
                                  <img class="pic" src="photo/${student.sPhotoPath }" alt="" class="layui-upload-img upload-img">
                             </div>
-                        </div> >
+                        </div>
 					</div>
 					<div class="layui-col-md10">
 						<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">

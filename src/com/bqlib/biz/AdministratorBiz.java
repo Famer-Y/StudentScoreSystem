@@ -4,17 +4,21 @@ import java.sql.Connection;
 import java.util.List;
 
 import com.bqlib.dao.DepartmentDao;
+import com.bqlib.dao.PoliticalDao;
 import com.bqlib.dao.ProfessionDao;
 import com.bqlib.dao.StudentDao;
 import com.bqlib.model.Department;
+import com.bqlib.model.Political;
 import com.bqlib.model.Profession;
 import com.bqlib.model.Student;
 import com.bqlib.util.DbUtil;
 
 public class AdministratorBiz {
+    
     private StudentDao studentDao = new StudentDao();
     private DepartmentDao departmentDao = new DepartmentDao();
     private ProfessionDao professionDao = new ProfessionDao();
+    private PoliticalDao politicalDao = new PoliticalDao();
     
     /**
      * 查询所有学生的信息
@@ -166,5 +170,17 @@ public class AdministratorBiz {
         List<Profession> professionList = professionDao.listProfessionByDepartment(dId);
         DbUtil.close();
         return professionList;
+    }
+    
+    /**
+     * 获取表中所有政治面貌
+     * @return
+     * @throws Exception
+     */
+    public List<Political> listPolitical() throws Exception {
+        Connection conn = DbUtil.getConn();
+        List<Political> politicalList = politicalDao.listPolitical();
+        DbUtil.close();
+        return politicalList;
     }
 }

@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.bqlib.biz.AdministratorBiz;
 import com.bqlib.model.Department;
+import com.bqlib.model.Political;
 import com.bqlib.model.Profession;
 import com.bqlib.model.Student;
 import com.bqlib.util.JsonDateValueProcessorUtil;
@@ -92,8 +93,41 @@ public class AdministratorServlet extends HttpServlet {
             System.out.println("根据院系id获取专业");
             return ;
         }
+		if ("listPolitical".equals(type)) {
+		    listPolitical(request, response);
+		    System.out.println("获取政治面貌");
+		    return ;
+		}
 	}
 	
+	/**
+	 * 获取政治面貌列表
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	protected void listPolitical(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    PrintWriter out = response.getWriter();
+        try{
+            List<Political> politicalList = adminBiz.listPolitical();
+            JSONArray jsonArr = JSONArray.fromObject(politicalList);
+            out.write(jsonArr.toString());
+            out.flush();
+            out.close();           
+        } catch (Exception e){
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
+	}
+	
+	/**
+	 * 根据院系id获取专业列表
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
 	protected void listProfessionByDepartment(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    String dId = request.getParameter("dId");
 	    PrintWriter out = response.getWriter();
@@ -112,6 +146,13 @@ public class AdministratorServlet extends HttpServlet {
         }
 	}
 	
+	/**
+	 * 获取院系列表
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
 	protected void listDepartment(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    PrintWriter out = response.getWriter();
         try{
@@ -126,17 +167,19 @@ public class AdministratorServlet extends HttpServlet {
         }
 	}
 	
+	/**
+	 * 修改学生信息
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
 	protected void updateStudent(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    
         PrintWriter out = response.getWriter();
 	    try{
             String sSno = request.getParameter("sSno");
-            Student isExist = adminBiz.getStudentBySno(sSno);
-            if (isExist != null) {
-                out.write("该学号已存在");
-                return ;
-            }
-            String sPhotoPath = request.getParameter("imgs");
+            String sPhotoPath = request.getParameter("sPhotoPath");
             String sName = request.getParameter("sName");
             String sSex = request.getParameter("sSex");
             String sPolitical = request.getParameter("sPolitical");
@@ -150,12 +193,9 @@ public class AdministratorServlet extends HttpServlet {
             String sPhone = request.getParameter("sPhone");
             String sEmail = request.getParameter("sEmail");
             
-            if (sPhotoPath.equals("")){
-                sPhotoPath = "uploadImg/default.jpg";
-            } else {
-                sPhotoPath = "uploadImg/" + sPhotoPath; 
-            }            
-    
+            if (sPhotoPath.equals("") || null == sPhotoPath){
+                sPhotoPath = "default.jpg";
+            }   
             //格式化表单中的时间
             SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
             Date birthday = null;
@@ -191,8 +231,14 @@ public class AdministratorServlet extends HttpServlet {
             response.sendRedirect("error.jsp");
         }
 	}
-	    
-	
+	    	
+	/**
+	 * 通过学号获取学生信息
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
 	protected void getStudentBySno(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    
 	    try {
@@ -229,6 +275,13 @@ public class AdministratorServlet extends HttpServlet {
 	    }
 	}
 	
+	/**
+	 * 删除学生
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
 	protected void deleteStudent(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    PrintWriter out = response.getWriter();
 	    try {
@@ -254,6 +307,13 @@ public class AdministratorServlet extends HttpServlet {
 	    }
 	}
 	
+	/**
+	 * 添加学生
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
 	protected void addStudent(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    
 	    PrintWriter out = response.getWriter();
@@ -322,6 +382,13 @@ public class AdministratorServlet extends HttpServlet {
         
 	}
 	
+	/**
+	 * 获取学生列表（用于分页）
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
 	protected void listStudentLimit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
         PrintWriter out = response.getWriter();
@@ -375,6 +442,13 @@ public class AdministratorServlet extends HttpServlet {
 	    }
 	}
 	
+	/**
+	 * 一次性获取表中所有学生
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
 	protected void listStudentAll(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
         try {

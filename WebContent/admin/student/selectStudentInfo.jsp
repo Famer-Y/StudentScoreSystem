@@ -53,7 +53,6 @@
                 <div class="layui-col-md2">
                     <div class="layui-input-block">
                         <select id="condition" lay-filter="condition" lay-verify="condition">
-                            <option value="0">请选择</option>
                             <option value="1">按学号查询</option>
                             <option value="2">按姓名查询</option>
                             <option value="3">按院系查询</option>
@@ -61,6 +60,7 @@
                         </select>
                     </div>
                 </div>
+                    <!-- 按学号查询 -->
                 <div id="sno">
                     <form action="" method="post">
                         <div class="layui-col-md8">
@@ -79,8 +79,8 @@
                             </div>
                         </div>
                     </form>
-
                 </div>
+                 <!-- 按姓名查询 -->
                 <div id="sname">
                     <form  action="" method="post">
                         <div class="layui-col-md8">
@@ -207,7 +207,7 @@
         window.onload = function () {
             var sno = document.getElementById("sno");
             var sname = document.getElementById("sname");
-            sno.style.display = "none";
+            sno.style.display = "block";
             sname.style.display = "none";
         };
         function selectAll(){

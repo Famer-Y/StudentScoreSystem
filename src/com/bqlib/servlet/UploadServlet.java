@@ -83,9 +83,7 @@ public class UploadServlet extends HttpServlet {
               Map<String, String> map = new HashMap<String, String>();
               map.put("msg", "上传成功");
               map.put("imgurl",fileNames);
-              String jsonstr = JSONObject.fromObject(map).toString();
-              System.out.print("jsonstr:" + jsonstr);
-              response.setCharacterEncoding("UTF-8");
+              String jsonstr = JSONObject.fromObject(map).toString();             
               PrintWriter out = response.getWriter();
               out.write(jsonstr);
               out.flush();

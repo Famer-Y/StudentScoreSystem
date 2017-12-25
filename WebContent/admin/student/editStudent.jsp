@@ -10,7 +10,7 @@ pageContext.setAttribute("url", basePath);
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>新增学生信息</title>
+    <title>编辑学生信息</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -42,6 +42,9 @@ pageContext.setAttribute("url", basePath);
 <div class="layui-container" style="margin-top: 10px">
 <!-- <%//=basePath %>administratorServlet?type=addStudent-->
     <form action="" class="layui-form" method="post" id="addinfomation">
+        <div id="hiddenInput">
+            <input type="hidden" name="sPhotoPath" value="${student.sPhotoPath}">
+        </div>
         <div class="layui-row">
             <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
                 <legend>新增学生信息</legend>
@@ -72,7 +75,7 @@ pageContext.setAttribute("url", basePath);
                         </fieldset>                 
                         <div class="layui-upload" align="center">                       
                             <div class="layui-upload-list" id="showPhoto">
-                                 <img class="pic" src="photo/${student.sPhotoPath }" alt="" class="layui-upload-img upload-img">
+                                 <img class="pic" src="photo/${student.sPhotoPath }" alt="" class="layui-upload-img upload-img" id="clearPhoto">
                             </div>
                             <button type="button" class="layui-btn" id="upload" >照片上传</button>
                         </div>
@@ -85,7 +88,7 @@ pageContext.setAttribute("url", basePath);
                             <div class="layui-inline">
                                 <label class="layui-form-label">学号<span style="color: red">*</span></label>
                                 <div class="layui-input-inline">
-                                    <input type="text" name="sSno" lay-verify="sSno" placeholder="" value="${student.sSno }" autocomplete="off" class="layui-input">
+                                    <input type="text" name="sSno" lay-verify="sSno" placeholder="" value="${student.sSno }" autocomplete="off" class="layui-input" disabled="">
                                 </div>
                             </div>
                         </div>
@@ -99,10 +102,7 @@ pageContext.setAttribute("url", basePath);
                             <div class="layui-inline">
                                 <label class="layui-form-label">政治面貌<span style="color: red">*</span></label>
                                 <div class="layui-input-inline">
-                                    <select name="sPolitical" lay-filter="political" lay-verify="political">
-                                        <option value=""></option>
-                                        <option value="团员">团员</option>
-                                        <option value="党员">党员</option>
+                                    <select name="sPolitical" lay-filter="political" lay-verify="political" id="political">
                                     </select>
                                 </div>
                             </div>
@@ -110,9 +110,8 @@ pageContext.setAttribute("url", basePath);
                         <div class="layui-form-item">
                             <div class="layui-inline">
                                 <label class="layui-form-label">性别<span style="color: red">*</span></label>
-                                <div class="layui-input-inline">
-                                    <input type="radio" name="sSex" value="男" title="男" checked="">
-                                    <input type="radio" name="sSex" value="女" title="女">
+                                <div class="layui-input-inline" id="sex">
+                                    
                                     <!-- <input type="radio" name="sex" value="禁" title="禁用" disabled=""> -->
                                 </div>
                             </div>
@@ -128,7 +127,7 @@ pageContext.setAttribute("url", basePath);
                                 <label class="layui-form-label">院系<span style="color: red">*</span></label>
                                 <div class="layui-input-inline">
                                     <select name="dId" lay-verify="department" lay-filter="department" id="department"> 
-                                                                            
+                                                                     
                                     </select>
                                 </div>
                             </div>
@@ -136,7 +135,6 @@ pageContext.setAttribute("url", basePath);
                                 <label class="layui-form-label">专业<span style="color: red">*</span></label>
                                 <div class="layui-input-inline">
                                     <select name="pId" lay-verify="profession" lay-filter="profession" id="profession">
-                                    
                                     </select>
                                 </div>
                             </div>
@@ -244,7 +242,7 @@ pageContext.setAttribute("url", basePath);
                 });
             },
             done: function(res){
-                $("#addinfomation").append("<input type='hidden' name='imgs' value='"
+                $("#hiddenInput").html("<input type='hidden' name='sPhotoPath' value='"
                         +res.imgurl+"'>");
             }
         });
@@ -305,11 +303,10 @@ pageContext.setAttribute("url", basePath);
             //layer.alert(JSON.stringify(data.field), {
               //  title: '最终的提交信息'
             //});
-            var url = "${url}administratorServlet?type=addStudent";
+            var url = "${url}administratorServlet?type=updateStudent";
             $.post(url,data.field,function(result){
-                layer.msg(result);
-                $("#reset").trigger("click");
-                $("#clearPhoto").hide();
+                alert(result);
+                window.location.href = "${url}administratorServlet?type=getStudentBySno&toPage=editStudent&sSno=${student.sSno}";
             },"text");          
             return false;
         });
@@ -321,7 +318,7 @@ pageContext.setAttribute("url", basePath);
                 var info = "<option value=''>请选择专业</option>";
                 for (var i = 0; i < result.length; i++) {
                     var obj = result[i];
-                    info += "<option value='" + obj.pId + "'>" + obj.pName + "</option>";                  
+                    info += "<option value='" + obj.pId + "'>" + obj.pName + "</option>";                                      
                 }
                 $("#profession").html(info);
                 form.render(); //重新渲染表单               
@@ -336,28 +333,125 @@ pageContext.setAttribute("url", basePath);
         laydate.render({
             elem: '#sBirthday' //指定元素
         });
-    });
+    });       
     
-    //联动一级
-    function listDepartment() {
-         var url = "${url}administratorServlet?type=listDepartment";
-         $.post(url,null,function(data){
-             var info = "<option value=''>请选择院系</option>";
-             for (var i = 0; i < data.length; i++) {
-                 var obj = data[i];
-                 info += "<option value='" + obj.dId + "'>" + obj.dName + "</option>";                
-             }
-             $("#department").html(info);
-             layui.use('form', function(){
-                   var form = layui.form;
-                   form.render();
-                  });
-         },"json");
+    //判断当前性别并输出学生的性别
+    function checkSex(){
+        var info = "";
+        var sex = ["男","女"]
+    	for (var i = 0; i < sex.length; i++) {   		
+    		if ("${student.sSex}" == sex[i]) {
+    			info += "<input type='radio' name='sSex' value='" + sex[i] + "' title='" + sex[i] + "' checked=''>";
+    		} else {
+    			info += "<input type='radio' name='sSex' value='" + sex[i] + "' title='" + sex[i] + "'>";
+    		}
+    	}
+        $("#sex").html(info);
+        layui.use('form', function(){
+              var form = layui.form;
+              form.render();
+             });
     }
-
+    
+    //异步请求获取院系列表并判断是否与要编辑的学生院系一致
+    function ajaxListDepartment(){
+    	$.ajax({
+            url: "${url}administratorServlet?type=listDepartment",
+            data: null, 
+            type:"post",
+            dataType: "json",
+            success:function(data){
+            	var info = "<option value=''>请选择院系</option>";
+                for (var i = 0; i < data.length; i++) {
+                    var obj = data[i];
+                    if ("${student.dId}" == obj.dId){
+                        info += "<option value='" + obj.dId + "' selected>" + obj.dName + "</option>";
+                    } else {
+                        info += "<option value='" + obj.dId + "'>" + obj.dName + "</option>";
+                    }                                 
+                }
+                $("#department").html(info);
+                layui.use('form', function(){
+                      var form = layui.form;
+                      form.render();
+                     });
+                $(document).dequeue("post");
+            },
+            error:function(){
+                jQuery(document).queue("post", [] );
+            }
+        });
+    }    
+    
+    //异步请求根据院系id获取专业列表并判断是否与要编辑的学生专业一致
+    function ajaxListProfession(){
+        $.ajax({
+            url: "${url}administratorServlet?type=listProfessionByDepartment",
+            data: {"dId":"${student.dId}"}, 
+            type:"post",
+            dataType: "json",
+            success:function(result){
+            	var info = "<option value=''>请选择专业</option>";
+                for (var i = 0; i < result.length; i++) {
+                    var obj = result[i];
+                    if ("${student.pId}" == obj.pId){
+                        info += "<option value='" + obj.pId + "' selected>" + obj.pName + "</option>";
+                    } else {
+                        info += "<option value='" + obj.pId + "'>" + obj.pName + "</option>";
+                    }                                     
+                }
+                $("#profession").html(info);
+                layui.use('form', function(){
+                    var form = layui.form;
+                    form.render();
+                   });
+                $(document).dequeue("post"); 
+            },
+            error:function(){
+                jQuery(document).queue("post", [] );
+            }
+        });
+    }
+    
+    //异步请求获取政治面貌列表并判断是否与要编辑的学生政治面貌一致
+    function ajaxListPolitical(){
+        $.ajax({
+            url: "${url}administratorServlet?type=listPolitical",
+            data: null, 
+            type:"post",
+            dataType: "json",
+            success:function(result){
+            	var info = "<option value=''>政治面貌</option>";
+                for (var i = 0; i < result.length; i++) {
+                    var obj = result[i];
+                    if ("${student.sPolitical}" == obj.name){
+                        info += "<option value='" + obj.name + "' selected>" + obj.name + "</option>";
+                    } else {
+                        info += "<option value='" + obj.name + "'>" + obj.name + "</option>";
+                    }                                     
+                }
+                $("#political").html(info);
+                layui.use('form', function(){
+                    var form = layui.form;
+                    form.render();
+                   });
+            },
+            error:function(){
+                jQuery(document).queue("post", [] );
+            }
+        });
+    }    
+    
     //当文档加载完毕后立即执行
     $(document).ready(function(){
-        listDepartment();
+    	
+    	//使用jQuery队列解决异步请求socket closed异常
+    	$(document).queue("post",ajaxListDepartment);
+        $(document).queue("post",ajaxListProfession);
+        $(document).queue("post",ajaxListPolitical);
+        
+        $(document).dequeue("post");
+        checkSex();
     });
 </script>
 </body>
