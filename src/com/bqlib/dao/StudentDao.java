@@ -70,6 +70,54 @@ public class StudentDao {
 	}
 	
 	/**
+	 * 统计同名的学生个数
+	 * @param sname
+	 * @return
+	 * @throws Exception
+	 */
+	public int countStudentByName(String sname) throws Exception {
+        String sql = "select count(1) as countStudent from student where sName = " + sname;
+        ResultSet rs = DbUtil.executeQuery(sql, null);
+        int num = 0;
+        while (rs.next()){
+            num = rs.getInt("countStudent");
+        }
+        return num;
+    }
+	
+	/**
+	 * 统计一个院系的学生数
+	 * @param dId
+	 * @return
+	 * @throws Exception
+	 */
+	public int countStudentByDepartment(String dId) throws Exception {
+        String sql = "select count(*) as countStudent from student where dId = ?";
+        ResultSet rs = DbUtil.executeQuery(sql, new Object[]{dId});
+        int num = 0;
+        while (rs.next()){
+            num = rs.getInt("countStudent");
+        }
+        return num;
+    }
+	
+	/**
+	 * 统计一个专业的学生数
+	 * @param pId
+	 * @return
+	 * @throws Exception
+	 */
+	public int countStudentByProfession(String pId) throws Exception {
+        String sql = "select count(*) as countStudent from student where pId = ?";
+        ResultSet rs = DbUtil.executeQuery(sql, new Object[]{pId});
+        int num = 0;
+        while (rs.next()){
+            num = rs.getInt("countStudent");
+        }
+        return num;
+    }
+	
+	/**
 	 * 查询表中所有学生
 	 * @return
 	 * @throws Exception
@@ -103,7 +151,7 @@ public class StudentDao {
     }
 	
 	/**
-	 * 查询部分学生信息
+	 * 查询部分学生信息(用于分页显示)
 	 * @param start
 	 * @param size
 	 * @return
@@ -137,6 +185,45 @@ public class StudentDao {
         }        
         return listStudent;
     }
+	
+	/**
+	 * 根据姓名获取学生列表（用于分页）
+	 * @param sname
+	 * @param start
+	 * @param size
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Student> listStudentLimitByName(String sname, Integer start, Integer size) throws Exception{ 
+	    List<Student> listStudent = new ArrayList<Student>();
+        String sql = "select top "+size+" sSno,sPassword,sName,sSex,sBirthday,sPolitical,dId,pId,sIdentity,sAddress,sQQ,sWchat,"
+                + " sPhone,sEmail,sPhotoPath from student "
+                + " where sSno not in ( select top "+ start +" sSno from student where sname = " + sname + ") "
+                        + " and sname = " + sname;
+        ResultSet rs = DbUtil.executeQuery(sql, null);        
+        while (rs.next()){
+            Student student = new Student();
+            student.setsSno(rs.getString("sSno"));
+            student.setsPassword(rs.getString("sPassword"));
+            student.setsName(rs.getString("sName"));
+            student.setsSex(rs.getString("sSex"));
+            Date birthday = new Date();
+            birthday = (Date) rs.getDate("sBirthday");
+            student.setsBirthday(birthday);
+            student.setsPolitical(rs.getString("sPolitical"));
+            student.setdId(rs.getString("dId"));
+            student.setpId(rs.getString("pId"));
+            student.setsIdentity(rs.getString("sIdentity"));
+            student.setsAddress(rs.getString("sAddress"));
+            student.setsQQ(rs.getString("sQQ"));
+            student.setsWchat(rs.getString("sWchat"));
+            student.setsPhone(rs.getString("sPhone"));
+            student.setsEmail(rs.getString("sEmail"));
+            student.setsPhotoPath(rs.getString("sPhotoPath"));
+            listStudent.add(student);
+        }        
+        return listStudent;
+	}
 	
 	/**
 	 * 根据学号查找学生
@@ -258,7 +345,7 @@ public class StudentDao {
         
         List<Student> listStudent = new ArrayList<Student>();
         String sql = "select top "+size+" sSno,sPassword,sName,sSex,sBirthday,sPolitical,dId,pId,sIdentity,sAddress,sQQ,sWchat,sPhone,sEmail,sPhotoPath from student "
-                + "where sSno not in ( select top "+ start +" sSno from student where dId = " + pId + ") and dId = " + pId;
+                + "where sSno not in ( select top "+ start +" sSno from student where pId = " + pId + ") and pId = " + pId;
         ResultSet rs = DbUtil.executeQuery(sql, null);        
         while (rs.next()){
             Student student = new Student();

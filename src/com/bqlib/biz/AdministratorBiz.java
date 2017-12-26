@@ -93,6 +93,81 @@ public class AdministratorBiz {
     }
     
     /**
+     * 根据姓名获取学生列表（用于分页）
+     * @param sname
+     * @param start
+     * @param size
+     * @return
+     * @throws Exception
+     */
+    public List<Student> listStudentLimitByName(String sname, Integer start, Integer size) throws Exception{ 
+        Connection conn = DbUtil.getConn();
+        List<Student> listStudent = studentDao.listStudentLimitByName(sname, start, size);
+        for (Student student : listStudent){
+            Department department = departmentDao.getDeparmentById(student.getdId());
+            if (department != null){
+                student.setdName(department.getdName());
+            }           
+            Profession profession = professionDao.getProfessionById(student.getpId());
+            if (profession != null){
+                student.setpName(profession.getpName()); 
+            }         
+        }
+        DbUtil.close();
+        return listStudent;
+    }
+    
+    /**
+     * 根据院系id获取学生列表（用于分页）
+     * @param dId
+     * @param start
+     * @param size
+     * @return
+     * @throws Exception
+     */
+    public List<Student> listStudentLimitByDepartment(String dId, Integer start, Integer size) throws Exception{ 
+        Connection conn = DbUtil.getConn();
+        List<Student> listStudent = studentDao.listStudentLimitByDepartment(dId, start, size);
+        for (Student student : listStudent){
+            Department department = departmentDao.getDeparmentById(student.getdId());
+            if (department != null){
+                student.setdName(department.getdName());
+            }           
+            Profession profession = professionDao.getProfessionById(student.getpId());
+            if (profession != null){
+                student.setpName(profession.getpName()); 
+            }         
+        }
+        DbUtil.close();
+        return listStudent;
+    }
+    
+    /**
+     * 根据专业id获取学生列表（用于分页）
+     * @param pId
+     * @param start
+     * @param size
+     * @return
+     * @throws Exception
+     */
+    public List<Student> listStudentLimitByProfession(String pId, Integer start, Integer size) throws Exception{ 
+        Connection conn = DbUtil.getConn();
+        List<Student> listStudent = studentDao.listStudentLimitByProfession(pId, start, size);
+        for (Student student : listStudent){
+            Department department = departmentDao.getDeparmentById(student.getdId());
+            if (department != null){
+                student.setdName(department.getdName());
+            }           
+            Profession profession = professionDao.getProfessionById(student.getpId());
+            if (profession != null){
+                student.setpName(profession.getpName()); 
+            }         
+        }
+        DbUtil.close();
+        return listStudent;
+    }
+    
+    /**
      * 添加学生
      * @param student
      * @return
@@ -115,6 +190,45 @@ public class AdministratorBiz {
         
         Connection conn = DbUtil.getConn();
         int num = studentDao.countStudent();
+        DbUtil.close();
+        return num;
+    }
+    
+    /**
+     * 统计同名的学生个数
+     * @param sname
+     * @return
+     * @throws Exception
+     */
+    public int countStudentByName(String sname) throws Exception {
+        Connection conn = DbUtil.getConn();
+        int num = studentDao.countStudentByName(sname);
+        DbUtil.close();
+        return num;
+    }
+    
+    /**
+     * 统计一个院系的学生数
+     * @param dId
+     * @return
+     * @throws Exception
+     */
+    public int countStudentByDepartment(String dId) throws Exception {
+        Connection conn = DbUtil.getConn();
+        int num = studentDao.countStudentByDepartment(dId);
+        DbUtil.close();
+        return num;
+    }
+    
+    /**
+     * 统计一个专业的学生数
+     * @param pId
+     * @return
+     * @throws Exception
+     */
+    public int countStudentByProfession(String pId) throws Exception {
+        Connection conn = DbUtil.getConn();
+        int num = studentDao.countStudentByProfession(pId);
         DbUtil.close();
         return num;
     }
@@ -148,7 +262,7 @@ public class AdministratorBiz {
     }
     
     /**
-     * 获取院系列表
+     * 获取表中所有的院系
      * @return
      * @throws Exception
      */
@@ -168,6 +282,18 @@ public class AdministratorBiz {
     public List<Profession> listProfessionByDepartment(String dId) throws Exception{
         Connection conn = DbUtil.getConn();
         List<Profession> professionList = professionDao.listProfessionByDepartment(dId);
+        DbUtil.close();
+        return professionList;
+    }
+    
+    /**
+     * 获取表中所有的专业
+     * @return
+     * @throws Exception
+     */
+    public List<Profession> listProfession() throws Exception{
+        Connection conn = DbUtil.getConn();
+        List<Profession> professionList = professionDao.listProfession();
         DbUtil.close();
         return professionList;
     }

@@ -59,4 +59,24 @@ public class ProfessionDao {
 		}
 		return listProfession;
 	}
+	
+	/**
+	 * 获取表中所有的专业
+	 * @param dId
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Profession> listProfession() throws Exception{
+	    List<Profession> listProfession = new ArrayList<Profession>();
+        String sql = "select pId, pName, dId from profession";
+        ResultSet rs = DbUtil.executeQuery(sql, null);
+        while (rs.next()){
+            Profession profession = new Profession();
+            profession.setpId(rs.getString("pId"));
+            profession.setpName(rs.getString("pName"));
+            profession.setdId(rs.getString("dId"));
+            listProfession.add(profession);
+        }
+        return listProfession;
+	}
 }

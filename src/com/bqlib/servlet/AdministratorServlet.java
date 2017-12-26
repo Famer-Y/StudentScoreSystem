@@ -2,6 +2,7 @@ package com.bqlib.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -73,6 +74,21 @@ public class AdministratorServlet extends HttpServlet {
 		    System.out.println("获取一页学生");
 		    return ;
 		}
+		if ("listStudentLimitByName".equals(type)) {		    
+		    listStudentLimitByName(request, response);
+		    System.out.println("通过姓名获取学生列表（用作分页）");
+            return ;
+        }
+		if ("listStudentLimitByDepartment".equals(type)) {            
+            listStudentLimitByDepartment(request, response);
+            System.out.println("通过院系id获取学生列表（用作分页）");
+            return ;
+        }
+		if ("listStudentLimitByProfession".equals(type)) {            
+		    listStudentLimitByProfession(request, response);
+            System.out.println("通过专业id获取学生列表（用作分页）");
+            return ;
+        }
 		if ("deleteStudent".equals(type)) {
 		    deleteStudent(request, response);
 		    System.out.println("删除学生");
@@ -98,10 +114,274 @@ public class AdministratorServlet extends HttpServlet {
 		    System.out.println("获取政治面貌");
 		    return ;
 		}
+		if ("listProfession".equals(type)) {
+		    listProfession(request, response);
+            System.out.println("获取专业");
+            return ;
+        }
+		if ("getStudentBySnoForTable".equals(type)) {
+		    getStudentBySnoForTable(request, response);
+            System.out.println("通过学号获取学生");
+            return ;
+        }
+	}
+	
+	protected void listStudentLimitByProfession(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    PrintWriter out = response.getWriter();
+        try {
+            String keyword = request.getParameter("keyword");
+            String pIndex = request.getParameter("page"); //获取数据表格请求的页数
+            String limit = request.getParameter("limit"); //获取数据表格请求的每页显示的条数
+            String pId = request.getParameter("pId");
+            Integer start = 0;
+            Integer pageSize = 0;            
+            
+            int countStudentByProfession = adminBiz.countStudentByProfession(pId);;
+            
+            if (null != limit) {
+                pageSize = Integer.parseInt(limit);
+            } else {
+                pageSize = 10;
+            }
+            
+            if (null != pIndex) {
+                Integer index = Integer.parseInt(pIndex);
+                if (countStudentByProfession > pageSize){
+                    start = (index - 1) * pageSize;
+                }               
+            }
+            JsonConfig jsonConfig = new JsonConfig();  
+            jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessorUtil());
+            JSONObject json = new JSONObject();
+            
+            List<Student> listStudent = adminBiz.listStudentLimitByProfession(pId,start, pageSize); 
+            if (null == listStudent) {
+                json.put("code", 0);
+                json.put("msg", "");
+                json.put("count", 0); 
+                json.put("data","");
+                out.write(json.toString());
+                out.flush();
+                out.close();
+                return ;
+            }
+            JSONArray jsonArr = JSONArray.fromObject(listStudent, jsonConfig);
+
+            json.put("code", 0);
+            json.put("msg", "");
+            json.put("count", countStudentByProfession); 
+            json.put("data", jsonArr);
+
+            out.write(json.toString());
+            out.flush();
+            out.close();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
 	}
 	
 	/**
-	 * 获取政治面貌列表
+	 * 向前台输出根据院系id查询的学生列表（用于表格显示）
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	protected void listStudentLimitByDepartment(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    PrintWriter out = response.getWriter();
+        try {
+            String keyword = request.getParameter("keyword");
+            String pIndex = request.getParameter("page"); //获取数据表格请求的页数
+            String limit = request.getParameter("limit"); //获取数据表格请求的每页显示的条数
+            String dId = request.getParameter("dId");
+            Integer start = 0;
+            Integer pageSize = 0;            
+            
+            int countStudentByDepartment = adminBiz.countStudentByDepartment(dId);;
+            
+            if (null != limit) {
+                pageSize = Integer.parseInt(limit);
+            } else {
+                pageSize = 10;
+            }
+            
+            if (null != pIndex) {
+                Integer index = Integer.parseInt(pIndex);
+                if (countStudentByDepartment > pageSize){
+                    start = (index - 1) * pageSize;
+                }               
+            }
+            JsonConfig jsonConfig = new JsonConfig();  
+            jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessorUtil());
+            JSONObject json = new JSONObject();
+            
+            List<Student> listStudent = adminBiz.listStudentLimitByDepartment(dId,start, pageSize); 
+            if (null == listStudent) {
+                json.put("code", 0);
+                json.put("msg", "");
+                json.put("count", 0); 
+                json.put("data","");
+                out.write(json.toString());
+                out.flush();
+                out.close();
+                return ;
+            }
+            JSONArray jsonArr = JSONArray.fromObject(listStudent, jsonConfig);
+
+            json.put("code", 0);
+            json.put("msg", "");
+            json.put("count", countStudentByDepartment); 
+            json.put("data", jsonArr);
+
+            out.write(json.toString());
+            out.flush();
+            out.close();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
+	}
+	
+	/**
+	 * 向前台输出根据姓名查询的学生列表（用于表格显示）
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	protected void listStudentLimitByName(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    PrintWriter out = response.getWriter();
+        try {
+            String keyword = request.getParameter("keyword");
+            String pIndex = request.getParameter("page"); //获取数据表格请求的页数
+            String limit = request.getParameter("limit"); //获取数据表格请求的每页显示的条数
+            String sname = request.getParameter("sname");
+            sname = URLDecoder.decode(sname,"UTF-8");
+            Integer start = 0;
+            Integer pageSize = 0;
+            
+            sname = "'" +sname+ "'";
+            
+            int countStudentByName = adminBiz.countStudentByName(sname);
+            
+            if (null != limit) {
+                pageSize = Integer.parseInt(limit);
+            } else {
+                pageSize = 10;
+            }
+            
+            if (null != pIndex) {
+                Integer index = Integer.parseInt(pIndex);
+                if (countStudentByName > pageSize){
+                    start = (index - 1) * pageSize;
+                }               
+            }
+            JsonConfig jsonConfig = new JsonConfig();  
+            jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessorUtil());
+            JSONObject json = new JSONObject();
+            
+            List<Student> listStudent = adminBiz.listStudentLimitByName(sname,start, pageSize); 
+            if (null == listStudent) {
+                json.put("code", 0);
+                json.put("msg", "");
+                json.put("count", 0); 
+                json.put("data","");
+                out.write(json.toString());
+                out.flush();
+                out.close();
+                return ;
+            }
+            JSONArray jsonArr = JSONArray.fromObject(listStudent, jsonConfig);
+
+            json.put("code", 0);
+            json.put("msg", "");
+            json.put("count", countStudentByName); 
+            json.put("data", jsonArr);
+
+            out.write(json.toString());
+            out.flush();
+            out.close();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
+	}
+	
+	/**
+	 * 向前台输出根据学号查询的信息（用于表格显示）
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	protected void getStudentBySnoForTable(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    PrintWriter out = response.getWriter();
+	    try {
+            String sSno = request.getParameter("sSno");
+            if (sSno == null){
+                return ;
+            }
+            Student student = adminBiz.getStudentBySno(sSno);            
+            
+            JsonConfig jsonConfig = new JsonConfig();  
+            jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessorUtil());
+            JSONObject json = new JSONObject();
+            
+            //当查询学生为空时，直接向前台发送一个空的
+            if (null == student) {
+                json.put("code", 0);
+                json.put("msg", "");
+                json.put("count", 0); 
+                json.put("data","");
+                out.write(json.toString());
+                out.flush();
+                out.close();
+                return ;
+            }
+            
+            JSONArray jsonArr = JSONArray.fromObject(student, jsonConfig);
+            json.put("code", 0);
+            json.put("msg", "");
+            json.put("count", 1); 
+            json.put("data", jsonArr);
+
+            out.write(json.toString());
+            out.flush();
+            out.close();
+           
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
+	}
+	
+	/**
+	 * 向前台输出专业列表
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	protected void listProfession(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    PrintWriter out = response.getWriter();
+        try{
+            List<Profession> professionList = adminBiz.listProfession();
+            JSONArray jsonArr = JSONArray.fromObject(professionList);
+            out.write(jsonArr.toString());
+            out.flush();
+            out.close();           
+        } catch (Exception e){
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
+	}
+	
+	/**
+	 * 向前台输出政治面貌列表
 	 * @param request
 	 * @param response
 	 * @throws ServletException
@@ -122,7 +402,7 @@ public class AdministratorServlet extends HttpServlet {
 	}
 	
 	/**
-	 * 根据院系id获取专业列表
+	 * 向前台输出根据院系id获取的专业列表
 	 * @param request
 	 * @param response
 	 * @throws ServletException
@@ -147,7 +427,7 @@ public class AdministratorServlet extends HttpServlet {
 	}
 	
 	/**
-	 * 获取院系列表
+	 * 向前台输出获取的院系列表
 	 * @param request
 	 * @param response
 	 * @throws ServletException
@@ -420,9 +700,13 @@ public class AdministratorServlet extends HttpServlet {
             
 	        List<Student> listStudent = adminBiz.listStudentLimit(start, pageSize);	
 	        if (null == listStudent) {
-	            out.write("");
-	            out.flush();
-	            out.close();
+	            json.put("code", 0);
+                json.put("msg", "");
+                json.put("count", 0); 
+                json.put("data","");
+                out.write(json.toString());
+                out.flush();
+                out.close();
 	            return ;
 	        }
             JSONArray jsonArr = JSONArray.fromObject(listStudent, jsonConfig);

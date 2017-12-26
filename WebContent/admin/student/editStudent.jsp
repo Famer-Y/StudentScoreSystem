@@ -10,7 +10,7 @@ pageContext.setAttribute("url", basePath);
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>编辑学生信息</title>
+    <title>修改学生信息</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -47,7 +47,7 @@ pageContext.setAttribute("url", basePath);
         </div>
         <div class="layui-row">
             <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-                <legend>新增学生信息</legend>
+                <legend>修改学生信息</legend>
             </fieldset>
             <!-- 学生详情中用到的按钮组 -->
             <!--<div class="layui-col-md12">
@@ -361,7 +361,7 @@ pageContext.setAttribute("url", basePath);
             type:"post",
             dataType: "json",
             success:function(data){
-            	var info = "<option value=''>请选择院系</option>";
+            	var info = "<option value=''>院系</option>";
                 for (var i = 0; i < data.length; i++) {
                     var obj = data[i];
                     if ("${student.dId}" == obj.dId){
@@ -391,7 +391,7 @@ pageContext.setAttribute("url", basePath);
             type:"post",
             dataType: "json",
             success:function(result){
-            	var info = "<option value=''>请选择专业</option>";
+            	var info = "<option value=''>专业</option>";
                 for (var i = 0; i < result.length; i++) {
                     var obj = result[i];
                     if ("${student.pId}" == obj.pId){

@@ -338,45 +338,65 @@ pageContext.setAttribute("url", basePath);
             elem: '#sBirthday' //指定元素
         });
     });
-    
-    //初始化院系列表
-    function listDepartment() {
-    	 var url = "${url}administratorServlet?type=listDepartment";
-         $.post(url,null,function(data){
-             var info = "<option value=''>院系</option>";
-             for (var i = 0; i < data.length; i++) {
-                 var obj = data[i];
-                 info += "<option value='" + obj.dId + "'>" + obj.dName + "</option>";                
-             }
-             $("#department").html(info);
-             layui.use('form', function(){
-            	   var form = layui.form;
-            	   form.render();
-            	  });
-         },"json");
-    }
-    
-    //初始化政治面貌列表
-    function listPolitical() {
-        var url = "${url}administratorServlet?type=listPolitical";
-        $.post(url,null,function(result){
-            var info = "<option value=''>政治面貌</option>";
-            for (var i = 0; i < result.length; i++) {
-                var obj = result[i];     
-                info += "<option value='" + obj.name + "'>" + obj.name + "</option>";                                    
+
+  //异步请求获取院系列表
+    function ajaxListDepartment(){
+        $.ajax({
+            url: "${url}administratorServlet?type=listDepartment",
+            data: null, 
+            type:"post",
+            dataType: "json",
+            success:function(data){
+                var info = "<option value=''>院系</option>";
+                for (var i = 0; i < data.length; i++) {
+                    var obj = data[i];
+                    info += "<option value='" + obj.dId + "'>" + obj.dName + "</option>";                           
+                }
+                $("#department").html(info);
+                layui.use('form', function(){
+                      var form = layui.form;
+                      form.render();
+                     });
+                $(document).dequeue("post");
+            },
+            error:function(){
+                jQuery(document).queue("post", [] );
             }
-            $("#political").html(info);
-            layui.use('form', function(){
-                var form = layui.form;
-                form.render();
-               });            
-       },"json");
+        });
+    } 
+  
+  //异步请求获取政治面貌列表
+    function ajaxListPolitical(){
+        $.ajax({
+            url: "${url}administratorServlet?type=listPolitical",
+            data: null, 
+            type:"post",
+            dataType: "json",
+            success:function(result){
+                var info = "<option value=''>政治面貌</option>";
+                for (var i = 0; i < result.length; i++) {
+                    var obj = result[i];                 
+                    info += "<option value='" + obj.name + "'>" + obj.name + "</option>";                                  
+                }
+                $("#political").html(info);
+                layui.use('form', function(){
+                    var form = layui.form;
+                    form.render();
+                   });
+            },
+            error:function(){
+                jQuery(document).queue("post", [] );
+            }
+        });
     }
 
     //当文档加载完毕后立即执行
     $(document).ready(function(){
-    	listDepartment();
-    	listPolitical();
+    	//使用jQuery队列解决异步请求socket closed异常
+        $(document).queue("post",ajaxListDepartment);
+        $(document).queue("post",ajaxListPolitical);
+        
+        $(document).dequeue("post");
     });
 </script>
 </body>
