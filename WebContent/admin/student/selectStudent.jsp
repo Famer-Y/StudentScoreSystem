@@ -40,7 +40,7 @@ pageContext.setAttribute("url", basePath);
 
             <div class="layui-col-md4 layui-col-md-offset4">
                 <div align="right" class="demoTable">                   
-                    <a class="layui-btn layui-btn-xs color-black" href="addStudentInfo.jsp" ><i class="layui-icon">&#xe654;&nbsp;新增</i></a>
+                    <a class="layui-btn layui-btn-xs color-black" href="addStudent.jsp" ><i class="layui-icon">&#xe654;&nbsp;新增</i></a>
                     <a class="layui-btn layui-btn-xs color-black" data-type="editStudent"><i class="layui-icon">&#xe642;&nbsp;修改</i></a>
                     <a class="layui-btn layui-btn-xs color-black" data-type="getCheckData"><i class="layui-icon">&#xe640;&nbsp;删除</i></a>                    
                 </div>

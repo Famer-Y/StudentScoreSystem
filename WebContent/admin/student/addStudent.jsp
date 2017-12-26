@@ -137,7 +137,7 @@ pageContext.setAttribute("url", basePath);
 								<label class="layui-form-label">专业<span style="color: red">*</span></label>
 								<div class="layui-input-inline">
 									<select name="pId" lay-verify="profession" lay-filter="profession" id="profession">
-									
+									   <option value="">请先选择院系</option>									
 									</select>
 								</div>
 							</div>
