@@ -13,6 +13,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.bqlib.biz.AdministratorBiz;
+import com.bqlib.biz.DepartmentBiz;
+import com.bqlib.biz.PoliticalBiz;
+import com.bqlib.biz.ProfessionBiz;
+import com.bqlib.biz.StudentBiz;
 import com.bqlib.model.Department;
 import com.bqlib.model.Political;
 import com.bqlib.model.Profession;
@@ -29,6 +33,10 @@ import net.sf.json.JsonConfig;
 public class AdministratorServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private AdministratorBiz adminBiz = new AdministratorBiz();
+	private StudentBiz studentBiz = new StudentBiz();
+	private DepartmentBiz departmentBiz = new DepartmentBiz();
+	private ProfessionBiz professionBiz = new ProfessionBiz();
+	private PoliticalBiz politicalBiz = new PoliticalBiz();
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -136,7 +144,7 @@ public class AdministratorServlet extends HttpServlet {
             Integer start = 0;
             Integer pageSize = 0;            
             
-            int countStudentByProfession = adminBiz.countStudentByProfession(pId);;
+            int countStudentByProfession = studentBiz.countStudentByProfession(pId);;
             
             if (null != limit) {
                 pageSize = Integer.parseInt(limit);
@@ -154,7 +162,7 @@ public class AdministratorServlet extends HttpServlet {
             jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessorUtil());
             JSONObject json = new JSONObject();
             
-            List<Student> listStudent = adminBiz.listStudentLimitByProfession(pId,start, pageSize); 
+            List<Student> listStudent = studentBiz.listStudentLimitByProfession(pId,start, pageSize); 
             if (null == listStudent) {
                 json.put("code", 0);
                 json.put("msg", "");
@@ -199,7 +207,7 @@ public class AdministratorServlet extends HttpServlet {
             Integer start = 0;
             Integer pageSize = 0;            
             
-            int countStudentByDepartment = adminBiz.countStudentByDepartment(dId);;
+            int countStudentByDepartment = studentBiz.countStudentByDepartment(dId);;
             
             if (null != limit) {
                 pageSize = Integer.parseInt(limit);
@@ -217,7 +225,7 @@ public class AdministratorServlet extends HttpServlet {
             jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessorUtil());
             JSONObject json = new JSONObject();
             
-            List<Student> listStudent = adminBiz.listStudentLimitByDepartment(dId,start, pageSize); 
+            List<Student> listStudent = studentBiz.listStudentLimitByDepartment(dId,start, pageSize); 
             if (null == listStudent) {
                 json.put("code", 0);
                 json.put("msg", "");
@@ -265,7 +273,7 @@ public class AdministratorServlet extends HttpServlet {
             
             sname = "'" +sname+ "'";
             
-            int countStudentByName = adminBiz.countStudentByName(sname);
+            int countStudentByName = studentBiz.countStudentByName(sname);
             
             if (null != limit) {
                 pageSize = Integer.parseInt(limit);
@@ -283,7 +291,7 @@ public class AdministratorServlet extends HttpServlet {
             jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessorUtil());
             JSONObject json = new JSONObject();
             
-            List<Student> listStudent = adminBiz.listStudentLimitByName(sname,start, pageSize); 
+            List<Student> listStudent = studentBiz.listStudentLimitByName(sname,start, pageSize); 
             if (null == listStudent) {
                 json.put("code", 0);
                 json.put("msg", "");
@@ -325,7 +333,7 @@ public class AdministratorServlet extends HttpServlet {
             if (sSno == null){
                 return ;
             }
-            Student student = adminBiz.getStudentBySno(sSno);            
+            Student student = studentBiz.getStudentBySno(sSno);            
             
             JsonConfig jsonConfig = new JsonConfig();  
             jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessorUtil());
@@ -369,7 +377,7 @@ public class AdministratorServlet extends HttpServlet {
 	protected void listProfession(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    PrintWriter out = response.getWriter();
         try{
-            List<Profession> professionList = adminBiz.listProfession();
+            List<Profession> professionList = professionBiz.listProfession();
             JSONArray jsonArr = JSONArray.fromObject(professionList);
             out.write(jsonArr.toString());
             out.flush();
@@ -390,7 +398,7 @@ public class AdministratorServlet extends HttpServlet {
 	protected void listPolitical(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    PrintWriter out = response.getWriter();
         try{
-            List<Political> politicalList = adminBiz.listPolitical();
+            List<Political> politicalList = politicalBiz.listPolitical();
             JSONArray jsonArr = JSONArray.fromObject(politicalList);
             out.write(jsonArr.toString());
             out.flush();
@@ -415,7 +423,7 @@ public class AdministratorServlet extends HttpServlet {
 	        return ;
 	    }
         try{
-            List<Profession> professionList = adminBiz.listProfessionByDepartment(dId);
+            List<Profession> professionList = professionBiz.listProfessionByDepartment(dId);
             JSONArray jsonArr = JSONArray.fromObject(professionList);
             out.write(jsonArr.toString());
             out.flush();
@@ -436,7 +444,7 @@ public class AdministratorServlet extends HttpServlet {
 	protected void listDepartment(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    PrintWriter out = response.getWriter();
         try{
-            List<Department> departmentList = adminBiz.listDeparment();
+            List<Department> departmentList = departmentBiz.listDeparment();
             JSONArray jsonArr = JSONArray.fromObject(departmentList);
             out.write(jsonArr.toString());
             out.flush();
@@ -497,7 +505,7 @@ public class AdministratorServlet extends HttpServlet {
             student.setsWchat(sWchat);
             student.setsPhone(sPhone);
             student.setsEmail(sEmail);
-            int num = adminBiz.updateStudent(student);            
+            int num = studentBiz.updateStudent(student);            
             
             if (num > 0) {
                 out.write("修改成功！！");
@@ -538,7 +546,7 @@ public class AdministratorServlet extends HttpServlet {
                 jumpPage = "admin/student/studentDetial.jsp";
                 
             }
-            Student student = adminBiz.getStudentBySno(sSno);
+            Student student = studentBiz.getStudentBySno(sSno);
             
             if (student != null){
                 System.out.println("查询成功");
@@ -571,7 +579,7 @@ public class AdministratorServlet extends HttpServlet {
 	            return ;
 	        }
 	        
-	        int num = adminBiz.deleteStudent(sSno);	        
+	        int num = studentBiz.deleteStudent(sSno);	        
                          
 	        if (num > 0) {
 	            out.write("删除成功！！");
@@ -600,7 +608,7 @@ public class AdministratorServlet extends HttpServlet {
 	    try{
     	    Student student = new Student();
             String sSno = request.getParameter("sSno");
-            Student isExist = adminBiz.getStudentBySno(sSno);
+            Student isExist = studentBiz.getStudentBySno(sSno);
             if (isExist != null) {
                 out.write("该学号已存在");
                 return ;
@@ -645,7 +653,7 @@ public class AdministratorServlet extends HttpServlet {
             student.setsWchat(sWchat);
             student.setsPhone(sPhone);
             student.setsEmail(sEmail);
-            int num = adminBiz.addStudent(student);
+            int num = studentBiz.addStudent(student);
             
             if (num > 0) {
                 out.write("保存成功！！");
@@ -680,7 +688,7 @@ public class AdministratorServlet extends HttpServlet {
 	        Integer start = 0;
 	        Integer pageSize = 0;
 	        
-	        int countStudentAll = adminBiz.countStudent();
+	        int countStudentAll = studentBiz.countStudent();
 	        
 	        if (null != limit) {
                 pageSize = Integer.parseInt(limit);
@@ -698,7 +706,7 @@ public class AdministratorServlet extends HttpServlet {
             jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessorUtil());
             JSONObject json = new JSONObject();
             
-	        List<Student> listStudent = adminBiz.listStudentLimit(start, pageSize);	
+	        List<Student> listStudent = studentBiz.listStudentLimit(start, pageSize);	
 	        if (null == listStudent) {
 	            json.put("code", 0);
                 json.put("msg", "");
@@ -736,7 +744,7 @@ public class AdministratorServlet extends HttpServlet {
 	protected void listStudentAll(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
         try {
-            List<Student> listStudent = adminBiz.listStudentAll();
+            List<Student> listStudent = studentBiz.listStudentAll();
             JsonConfig jsonConfig = new JsonConfig();  
             jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessorUtil());
             JSONArray jsonArr = JSONArray.fromObject(listStudent, jsonConfig);
