@@ -385,7 +385,7 @@ pageContext.setAttribute("url", basePath);
                    });
             },
             error:function(){
-                jQuery(document).queue("post", [] );
+                $(document).queue("post", [] );
             }
         });
     }

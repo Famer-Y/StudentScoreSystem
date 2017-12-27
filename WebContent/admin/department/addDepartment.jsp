@@ -70,7 +70,7 @@ pageContext.setAttribute("url", basePath);
 		                    <div class="layui-inline">
 		                        <label class="layui-form-label">院系地址</label>
 		                        <div class="layui-input-inline">
-		                            <input type="text" name="dAdress" lay-verify="dAdress" placeholder="" autocomplete="off" class="layui-input">
+		                            <input type="text" name="dAddress" lay-verify="dAddress" placeholder="" autocomplete="off" class="layui-input">
 		                        </div>
 		                    </div>
 		                </div>
@@ -127,7 +127,7 @@ pageContext.setAttribute("url", basePath);
         	//layer.alert(JSON.stringify(data.field), {
         	  //  title: '最终的提交信息'
             //});
-        	var url = "${url}";
+        	var url = "${url}administratorServlet?type=addDepartment";
         	$.post(url,data.field,function(result){
         		layer.msg(result);
         		$("#reset").trigger("click");

@@ -139,59 +139,182 @@ public class AdministratorServlet extends HttpServlet {
             System.out.println("添加院系");
             return ;
         }
+		if ("listDepartmentLimit".equals(type)) {
+		    listDepartmentLimit(request, response);
+            System.out.println("获取院系列表");
+            return ;
+        }
+		if ("updateDepartment".equals(type)) {
+		    updateDepartment(request, response);
+            System.out.println("修改院系");
+            return ;
+        }
+		if ("deleteDepartment".equals(type)) {
+		    deleteDepartment(request, response);
+            System.out.println("删除院系");
+            return ;
+        }
+		if ("getDepartmentBydId".equals(type)) {
+		    getDepartmentBydId(request, response);
+            System.out.println("根据id获取院系");
+            return ;
+        }
 	}
 	
+	protected void deleteDepartment(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        PrintWriter out = response.getWriter();
+        try {
+            String dId = request.getParameter("dId");
+            
+            if (dId == null){
+                return ;
+            }
+            
+            int num = departmentBiz.deleteDepartment(dId);           
+                         
+            if (num > 0) {
+                out.write("删除成功！！");
+            } else {
+                out.write("删除失败！！");
+            }
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            out.write("删除失败！！");
+            //response.sendRedirect("error.jsp");
+        }
+    }
+	
+	protected void getDepartmentBydId(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        
+        try {
+            String dId = request.getParameter("dId");
+            
+            if (dId == null){
+                return ;
+            }
+            
+            Department department = departmentBiz.getDeparmentById(dId);
+            
+            if (department != null){
+                System.out.println("查询成功");
+                request.getSession().setAttribute("department", department);
+                response.sendRedirect("admin/department/editDepartment.jsp");
+            } else {
+                System.out.println("查无此院系！！！");
+                response.sendRedirect("error.jsp");
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
+    }
+	
+	protected void updateDepartment(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        
+        PrintWriter out = response.getWriter();
+        try{
+            String dId = request.getParameter("dId");
+            String dName = request.getParameter("dName");
+            String dAddress = request.getParameter("dAddress");
+            
+            Department department = new Department();
+            
+            department.setdId(dId);
+            department.setdAddress(dAddress);
+            department.setdName(dName);
+           
+            int num = departmentBiz.updateDepartment(department);            
+            
+            if (num > 0) {
+                out.write("修改成功！！");
+            } else {
+                out.write("修改失败！！");
+            }
+            out.flush();
+            out.close();           
+        } catch (Exception e){
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
+    }
+	
+    protected void listDepartmentLimit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        PrintWriter out = response.getWriter();
+        try {
+            String keyword = request.getParameter("keyword");
+            String pIndex = request.getParameter("page"); //获取数据表格请求的页数
+            String limit = request.getParameter("limit"); //获取数据表格请求的每页显示的条数
+            Integer start = 0;
+            Integer pageSize = 0;            
+            
+            int countDepartment = departmentBiz.countDepartment();
+            
+            if (null != limit) {
+                pageSize = Integer.parseInt(limit);
+            } else {
+                pageSize = 10;
+            }
+            
+            if (null != pIndex) {
+                Integer index = Integer.parseInt(pIndex);
+                if (countDepartment > pageSize){
+                    start = (index - 1) * pageSize;
+                }               
+            }
+            JsonConfig jsonConfig = new JsonConfig();  
+            jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessorUtil());
+            JSONObject json = new JSONObject();
+            
+            List<Department> listDepartment = departmentBiz.listDepartmentLimit(start, pageSize); 
+            if (null == listDepartment) {
+                json.put("code", 0);
+                json.put("msg", "");
+                json.put("count", 0); 
+                json.put("data","");
+                out.write(json.toString());
+                out.flush();
+                out.close();
+                return ;
+            }
+            JSONArray jsonArr = JSONArray.fromObject(listDepartment, jsonConfig);
+
+            json.put("code", 0);
+            json.put("msg", "");
+            json.put("count", countDepartment); 
+            json.put("data", jsonArr);
+
+            out.write(json.toString());
+            out.flush();
+            out.close();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
+    }
+    
 	protected void addDepartment(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    PrintWriter out = response.getWriter();
         try{
-            Student student = new Student();
+            Department department = new Department();
             String dId = request.getParameter("dId");
             Department isExist = departmentBiz.getDeparmentById(dId);
             if (isExist != null) {
                 out.write("该院系编号已存在");
                 return ;
             }
-            String sPhotoPath = request.getParameter("sPhotoPath");
-            String sName = request.getParameter("sName");
-            String sSex = request.getParameter("sSex");
-            String sPolitical = request.getParameter("sPolitical");
-            String sBirthday = request.getParameter("sBirthday");
-            String dId = request.getParameter("dId");
-            String pId = request.getParameter("pId");
-            String sIdentity = request.getParameter("sIdentity");
-            String sAddress = request.getParameter("sAddress");
-            String sQQ = request.getParameter("sQQ");
-            String sWchat = request.getParameter("sWchat");
-            String sPhone = request.getParameter("sPhone");
-            String sEmail = request.getParameter("sEmail");
+
+            String dName = request.getParameter("dName");
+            String dAddress = request.getParameter("dAddress");
             
-            if (sPhotoPath.equals("") || null == sPhotoPath){
-                sPhotoPath = "default.jpg";
-            } else {
-                sPhotoPath = sPhotoPath; 
-            }
-    
-            //格式化表单中的时间
-            SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
-            Date birthday = null;
-            birthday = sdf1.parse(sBirthday);
-                       
-            student.setsPhotoPath(sPhotoPath);
-            student.setsSno(sSno);
-            student.setsPassword(sSno);
-            student.setsName(sName);
-            student.setsSex(sSex);
-            student.setsPolitical(sPolitical);
-            student.setsBirthday(birthday);
-            student.setdId(dId);
-            student.setpId(pId);
-            student.setsIdentity(sIdentity);
-            student.setsAddress(sAddress);
-            student.setsQQ(sQQ);
-            student.setsWchat(sWchat);
-            student.setsPhone(sPhone);
-            student.setsEmail(sEmail);
-            int num = studentBiz.addStudent(student);
+            department.setdId(dId);
+            department.setdName(dName);
+            department.setdAddress(dAddress);
+            
+            int num = departmentBiz.addDepartment(department);
             
             if (num > 0) {
                 out.write("添加成功！！");

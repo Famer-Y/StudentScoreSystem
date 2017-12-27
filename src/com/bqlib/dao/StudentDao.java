@@ -160,7 +160,9 @@ public class StudentDao {
 	public List<Student> listStudentLimit(Integer start, Integer size) throws Exception{    
         
 	    List<Student> listStudent = new ArrayList<Student>();
-        String sql = "select top "+size+" sSno,sPassword,sName,sSex,sBirthday,sPolitical,dId,pId,sIdentity,sAddress,sQQ,sWchat,sPhone,sEmail,sPhotoPath from student where sSno not in ( select top "+ start +" sSno from student)";
+        String sql = "select top "+size+" sSno,sPassword,sName,sSex,sBirthday,sPolitical,"
+                + "dId,pId,sIdentity,sAddress,sQQ,sWchat,sPhone,sEmail,sPhotoPath "
+                + " from student where sSno not in ( select top "+ start +" sSno from student)";
         ResultSet rs = DbUtil.executeQuery(sql, null);        
         while (rs.next()){
             Student student = new Student();
