@@ -131,7 +131,6 @@ pageContext.setAttribute("url", basePath);
         	$.post(url,data.field,function(result){
         		layer.msg(result);
         		$("#reset").trigger("click");
-        		$("#clearPhoto").hide();
         	},"text");       	
             return false;
         });       

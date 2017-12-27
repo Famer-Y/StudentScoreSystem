@@ -1,3 +1,7 @@
+/**
+ * 政治面貌业务类
+ */
+
 package com.bqlib.biz;
 
 import java.sql.Connection;

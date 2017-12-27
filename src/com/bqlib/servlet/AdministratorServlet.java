@@ -1,3 +1,6 @@
+/**
+ * 管理员的各种操作（后台与前端的交互）
+ * */
 package com.bqlib.servlet;
 
 import java.io.IOException;
@@ -32,7 +35,6 @@ import net.sf.json.JsonConfig;
  */
 public class AdministratorServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private AdministratorBiz adminBiz = new AdministratorBiz();
 	private StudentBiz studentBiz = new StudentBiz();
 	private DepartmentBiz departmentBiz = new DepartmentBiz();
 	private ProfessionBiz professionBiz = new ProfessionBiz();
@@ -131,6 +133,77 @@ public class AdministratorServlet extends HttpServlet {
 		    getStudentBySnoForTable(request, response);
             System.out.println("通过学号获取学生");
             return ;
+        }
+		if ("addDepartment".equals(type)) {
+		    addDepartment(request, response);
+            System.out.println("添加院系");
+            return ;
+        }
+	}
+	
+	protected void addDepartment(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    PrintWriter out = response.getWriter();
+        try{
+            Student student = new Student();
+            String dId = request.getParameter("dId");
+            Department isExist = departmentBiz.getDeparmentById(dId);
+            if (isExist != null) {
+                out.write("该院系编号已存在");
+                return ;
+            }
+            String sPhotoPath = request.getParameter("sPhotoPath");
+            String sName = request.getParameter("sName");
+            String sSex = request.getParameter("sSex");
+            String sPolitical = request.getParameter("sPolitical");
+            String sBirthday = request.getParameter("sBirthday");
+            String dId = request.getParameter("dId");
+            String pId = request.getParameter("pId");
+            String sIdentity = request.getParameter("sIdentity");
+            String sAddress = request.getParameter("sAddress");
+            String sQQ = request.getParameter("sQQ");
+            String sWchat = request.getParameter("sWchat");
+            String sPhone = request.getParameter("sPhone");
+            String sEmail = request.getParameter("sEmail");
+            
+            if (sPhotoPath.equals("") || null == sPhotoPath){
+                sPhotoPath = "default.jpg";
+            } else {
+                sPhotoPath = sPhotoPath; 
+            }
+    
+            //格式化表单中的时间
+            SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+            Date birthday = null;
+            birthday = sdf1.parse(sBirthday);
+                       
+            student.setsPhotoPath(sPhotoPath);
+            student.setsSno(sSno);
+            student.setsPassword(sSno);
+            student.setsName(sName);
+            student.setsSex(sSex);
+            student.setsPolitical(sPolitical);
+            student.setsBirthday(birthday);
+            student.setdId(dId);
+            student.setpId(pId);
+            student.setsIdentity(sIdentity);
+            student.setsAddress(sAddress);
+            student.setsQQ(sQQ);
+            student.setsWchat(sWchat);
+            student.setsPhone(sPhone);
+            student.setsEmail(sEmail);
+            int num = studentBiz.addStudent(student);
+            
+            if (num > 0) {
+                out.write("添加成功！！");
+            } else {
+                out.write("添加失败！！");
+            }
+            out.flush();
+            out.close();
+            
+        } catch (Exception e){
+            e.printStackTrace();
+            out.write("添加失败！！");
         }
 	}
 	
@@ -656,16 +729,16 @@ public class AdministratorServlet extends HttpServlet {
             int num = studentBiz.addStudent(student);
             
             if (num > 0) {
-                out.write("保存成功！！");
+                out.write("添加成功！！");
             } else {
-                out.write("保存失败！！");
+                out.write("添加失败！！");
             }
             out.flush();
             out.close();
             
 	    } catch (Exception e){
 	        e.printStackTrace();
-	        out.write("保存失败！！");
+	        out.write("添加失败！！");
 	    }
         
 	}
