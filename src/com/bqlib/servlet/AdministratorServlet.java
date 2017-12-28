@@ -159,7 +159,198 @@ public class AdministratorServlet extends HttpServlet {
             System.out.println("根据id获取院系");
             return ;
         }
+		if ("addProfession".equals(type)) {
+		    addProfession(request, response);
+            System.out.println("添加专业");
+            return ;
+        }
+		if ("listProfessionLimit".equals(type)) {
+		    listProfessionLimit(request, response);
+            System.out.println("获取专业列表");
+            return ;
+        }
+		if ("getProfessionById".equals(type)) {
+		    getProfessionById(request, response);
+            System.out.println("根据id获取专业");
+            return ;
+        }
+		if ("deleteProfession".equals(type)) {
+		    deleteProfession(request, response);
+            System.out.println("删除专业");
+            return ;
+        }
+		if ("updateProfession".equals(type)) {
+		    updateProfession(request, response);
+            System.out.println("修改专业");
+            return ;
+        }
 	}
+	
+	protected void updateProfession(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        
+        PrintWriter out = response.getWriter();
+        try{
+            String dId = request.getParameter("dId");
+            String pName = request.getParameter("pName");
+            String pId = request.getParameter("pId");
+            
+            Profession profession = new Profession();
+            
+            profession.setdId(dId);
+            profession.setpId(pId);
+            profession.setpName(pName);
+           
+            int num = professionBiz.updateProfession(profession);            
+            
+            if (num > 0) {
+                out.write("修改成功！！");
+            } else {
+                out.write("修改失败！！");
+            }
+            out.flush();
+            out.close();           
+        } catch (Exception e){
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
+    }
+	
+	protected void deleteProfession(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        PrintWriter out = response.getWriter();
+        try {
+            String pId = request.getParameter("pId");
+            
+            if (pId == null){
+                return ;
+            }
+            
+            int num = professionBiz.deleteProfession(pId);           
+                         
+            if (num > 0) {
+                out.write("删除成功！！");
+            } else {
+                out.write("删除失败！！");
+            }
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            out.write("删除失败！！");
+            //response.sendRedirect("error.jsp");
+        }
+    }
+	
+	protected void getProfessionById(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        
+        try {
+            String pId = request.getParameter("pId");
+            
+            if (pId == null){
+                return ;
+            }
+            
+            Profession profession = professionBiz.getProfessionById(pId);
+            
+            if (profession != null){
+                request.getSession().setAttribute("profession", profession);
+                response.sendRedirect("admin/profession/editProfession.jsp");
+            } else {
+                System.out.println("查无此专业！！！");
+                response.sendRedirect("error.jsp");
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
+    }
+	
+	protected void listProfessionLimit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        PrintWriter out = response.getWriter();
+        try {
+            String keyword = request.getParameter("keyword");
+            String pIndex = request.getParameter("page"); //获取数据表格请求的页数
+            String limit = request.getParameter("limit"); //获取数据表格请求的每页显示的条数
+            Integer start = 0;
+            Integer pageSize = 0;            
+            
+            int countProfession = professionBiz.countProfession();
+            
+            if (null != limit) {
+                pageSize = Integer.parseInt(limit);
+            } else {
+                pageSize = 10;
+            }
+            
+            if (null != pIndex) {
+                Integer index = Integer.parseInt(pIndex);
+                if (countProfession > pageSize){
+                    start = (index - 1) * pageSize;
+                }               
+            }
+            JSONObject json = new JSONObject();
+            
+            List<Profession> listProfession = professionBiz.listProfessionLimit(start, pageSize); 
+            if (null == listProfession) {
+                json.put("code", 0);
+                json.put("msg", "");
+                json.put("count", 0); 
+                json.put("data","");
+                out.write(json.toString());
+                out.flush();
+                out.close();
+                return ;
+            }
+            JSONArray jsonArr = JSONArray.fromObject(listProfession);
+
+            json.put("code", 0);
+            json.put("msg", "");
+            json.put("count", countProfession); 
+            json.put("data", jsonArr);
+
+            out.write(json.toString());
+            out.flush();
+            out.close();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
+    }
+	
+	protected void addProfession(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        PrintWriter out = response.getWriter();
+        try{            
+            String pId = request.getParameter("pId");
+            Profession isExist = professionBiz.getProfessionById(pId);
+            if (isExist != null) {
+                out.write("该专业编号已存在");
+                return ;
+            }
+                
+            String dId = request.getParameter("dId");
+            String pName = request.getParameter("pName");
+            
+            Profession profession = new Profession();
+            profession.setpId(pId);
+            profession.setpName(pName);
+            profession.setdId(dId);
+            
+            int num = professionBiz.addProfession(profession);
+            
+            if (num > 0) {
+                out.write("添加成功！！");
+            } else {
+                out.write("添加失败！！");
+            }
+            out.flush();
+            out.close();
+            
+        } catch (Exception e){
+            e.printStackTrace();
+            out.write("添加失败！！");
+        }
+    }
 	
 	protected void deleteDepartment(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter out = response.getWriter();

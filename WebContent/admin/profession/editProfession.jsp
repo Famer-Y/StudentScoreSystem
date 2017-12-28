@@ -10,7 +10,7 @@ pageContext.setAttribute("url", basePath);
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>新增院系信息</title>
+    <title>修改专业</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -47,30 +47,32 @@ pageContext.setAttribute("url", basePath);
        </div>
         <div class="layui-row">
             <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-                <legend>新增院系信息</legend>
+                <legend>修改专业</legend>
             </fieldset>
             <div class="layui-col-md12">
                 <div class="layui-row">
                     <div class="layui-col-md8 layui-col-md-offset2">
                         <div class="layui-form-item">
                             <div class="layui-inline">
-                                <label class="layui-form-label">院系编号<span style="color: red">*</span></label>
+                                <label class="layui-form-label">专业编号<span style="color: red">*</span></label>
                                 <div class="layui-input-inline">
-                                    <input type="text" name="dId" lay-verify="dId" placeholder="" value="${department.dId }" autocomplete="off" class="layui-input" disabled="disabled">
+                                    <input type="text" name="pId" lay-verify="pId" placeholder="" value="${profession.pId}" autocomplete="off" class="layui-input" disabled="disabled">
                                 </div>
-                            </div>
+                            </div>                          
                         </div>
                         <div class="layui-form-item">
-                            <div class="layui-inline">
-                                <label class="layui-form-label">院系名称<span style="color: red">*</span></label>
+                          <div class="layui-inline">
+                                <label class="layui-form-label">所属院系<span style="color: red">*</span></label>
                                 <div class="layui-input-inline">
-                                    <input type="text" name="dName" lay-verify="dName" placeholder="" value="${department.dName }" autocomplete="off" class="layui-input">
+                                    <select name="dId" lay-verify="department" lay-filter="department" id="department"> 
+                                                                            
+                                    </select>
                                 </div>
                             </div>
                             <div class="layui-inline">
-                                <label class="layui-form-label">院系地址</label>
+                                <label class="layui-form-label">专业名称<span style="color: red">*</span></label>
                                 <div class="layui-input-inline">
-                                    <input type="text" name="dAddress" lay-verify="dAddress" placeholder="" value="${department.dAddress }" autocomplete="off" class="layui-input">
+                                    <input type="text" name="pName" lay-verify="pName" placeholder="" value="${profession.pName}" autocomplete="off" class="layui-input">
                                 </div>
                             </div>
                         </div>
@@ -103,7 +105,21 @@ pageContext.setAttribute("url", basePath);
         form.verify({        
             pName: function (value) {
                 if(value.length < 1){
-                    return '专业名称不能为空';
+                    return '院系名称不能为空';
+                }
+            },
+            pId: function(value){
+                if (value.length <= 0){
+                    return "专业编号不能为空";
+                }
+                if (!new RegExp("^[0-9]*$").test(value)){
+                    return '专业编号必须是数字';
+                }
+                if (value.length < 2){
+                    return '专业编号少于2位';
+                }
+                if (value.length > 2){
+                    return '专业编号多于2位';
                 }
             },
             department: function(value) {
@@ -118,14 +134,45 @@ pageContext.setAttribute("url", basePath);
             //layer.alert(JSON.stringify(data.field), {
               //  title: '最终的提交信息'
             //});
-            var url = "${url}administratorServlet?type=updateDepartment";
+            var url = "${url}administratorServlet?type=updateProfession";
             $.post(url,data.field,function(result){
-                alert(result);
-                window.location.href = "${url}administratorServlet?type=getDepartmentById&pId=${department.dId}";
+            	alert(result);
+                window.location.href = "${url}administratorServlet?type=getProfessionById&pId=${profession.pId}";
             },"text");          
             return false;
         });       
     });
+    
+    function ajaxListDepartment(){
+        $.ajax({
+            url: "${url}administratorServlet?type=listDepartment",
+            data: null, 
+            type:"post",
+            dataType: "json",
+            success:function(data){
+                var info = "<option value=''>院系</option>";
+                for (var i = 0; i < data.length; i++) {
+                    var obj = data[i];
+                    if ("${profession.dId}" == obj.dId){
+                        info += "<option value='" + obj.dId + "' selected>" + obj.dName + "</option>";
+                    } else {
+                        info += "<option value='" + obj.dId + "'>" + obj.dName + "</option>";
+                    }                                 
+                }
+                $("#department").html(info);
+                layui.use('form', function(){
+                      var form = layui.form;
+                      form.render();
+                     });
+            },
+            error:function(){
+            }
+        });
+    }   
+    
+    window.onload = function() {
+        ajaxListDepartment();
+    }
 </script>
 </body>
 </html>

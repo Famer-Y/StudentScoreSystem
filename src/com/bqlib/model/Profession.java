@@ -4,6 +4,7 @@ public class Profession {
 	private String pId;
 	private String pName;
 	private String dId;
+	private String dName;
 	
 	public String getpId() {
 		return pId;
@@ -11,7 +12,13 @@ public class Profession {
 	public void setpId(String pId) {
 		this.pId = pId;
 	}
-	public String getpName() {
+	public String getdName() {
+        return dName;
+    }
+    public void setdName(String dName) {
+        this.dName = dName;
+    }
+    public String getpName() {
 		return pName;
 	}
 	public void setpName(String pName) {
