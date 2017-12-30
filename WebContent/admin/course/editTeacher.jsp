@@ -10,7 +10,7 @@ pageContext.setAttribute("url", basePath);
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>修改学生信息</title>
+    <title>修改教师信息</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -43,11 +43,11 @@ pageContext.setAttribute("url", basePath);
 <!-- <%//=basePath %>administratorServlet?type=addStudent-->
     <form action="" class="layui-form" method="post" id="addinfomation">
         <div id="hiddenInput">
-            <input type="hidden" name="sPhotoPath" value="${student.sPhotoPath}">
+            <input type="hidden" name="tPhotoPath" value="${teacher.tPhotoPath}">
         </div>
         <div class="layui-row">
             <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-                <legend>修改学生信息</legend>
+                <legend>修改教师信息</legend>
             </fieldset>
             <!-- 学生详情中用到的按钮组 -->
             <!--<div class="layui-col-md12">
@@ -75,7 +75,7 @@ pageContext.setAttribute("url", basePath);
                         </fieldset>                 
                         <div class="layui-upload" align="center">                       
                             <div class="layui-upload-list" id="showPhoto">
-                                 <img class="pic" src="photo/${student.sPhotoPath }" alt="" class="layui-upload-img upload-img" id="clearPhoto">
+                                 <img class="pic" src="photo/${teacher.tPhotoPath }" alt="" class="layui-upload-img upload-img" id="clearPhoto">
                             </div>
                             <button type="button" class="layui-btn" id="upload" >照片上传</button>
                         </div>
@@ -86,9 +86,9 @@ pageContext.setAttribute("url", basePath);
                         </fieldset>
                         <div class="layui-form-item">
                             <div class="layui-inline">
-                                <label class="layui-form-label">学号<span style="color: red">*</span></label>
+                                <label class="layui-form-label">工号<span style="color: red">*</span></label>
                                 <div class="layui-input-inline">
-                                    <input type="text" name="sSno" lay-verify="sSno" placeholder="" value="${student.sSno }" autocomplete="off" class="layui-input" disabled="">
+                                    <input type="text" name="tSno" lay-verify="tSno" placeholder="" value="${teacher.tSno }" autocomplete="off" class="layui-input" disabled="">
                                 </div>
                             </div>
                         </div>
@@ -96,13 +96,13 @@ pageContext.setAttribute("url", basePath);
                             <div class="layui-inline">
                                 <label class="layui-form-label">姓名<span style="color: red">*</span></label>
                                 <div class="layui-input-inline">
-                                    <input type="text" name="sName" lay-verify="sname" placeholder="" value="${student.sName }" autocomplete="off" class="layui-input">
+                                    <input type="text" name="tName" lay-verify="tname" placeholder="" value="${teacher.tName }" autocomplete="off" class="layui-input">
                                 </div>
                             </div>
                             <div class="layui-inline">
                                 <label class="layui-form-label">政治面貌<span style="color: red">*</span></label>
                                 <div class="layui-input-inline">
-                                    <select name="sPolitical" lay-filter="political" lay-verify="political" id="political">
+                                    <select name="tPolitical" lay-filter="political" lay-verify="political" id="political">
                                     </select>
                                 </div>
                             </div>
@@ -118,7 +118,7 @@ pageContext.setAttribute("url", basePath);
                             <div class="layui-inline">
                                 <label class="layui-form-label">出生日期<span style="color: red">*</span></label>
                                 <div class="layui-input-inline">
-                                    <input type="text" name="sBirthday" id="sBirthday" lay-verify="date" placeholder="" value="${student.sBirthday }" autocomplete="off" class="layui-input">
+                                    <input type="text" name="tBirthday" id="tBirthday" lay-verify="date" placeholder="" value="${teacher.tBirthday }" autocomplete="off" class="layui-input">
                                 </div>
                             </div>
                         </div>
@@ -128,13 +128,6 @@ pageContext.setAttribute("url", basePath);
                                 <div class="layui-input-inline">
                                     <select name="dId" lay-verify="department" lay-filter="department" id="department"> 
                                                                      
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="layui-inline">
-                                <label class="layui-form-label">专业<span style="color: red">*</span></label>
-                                <div class="layui-input-inline">
-                                    <select name="pId" lay-verify="profession" lay-filter="profession" id="profession">
                                     </select>
                                 </div>
                             </div>
@@ -149,13 +142,13 @@ pageContext.setAttribute("url", basePath);
                 <div class="layui-form-item">
                     <label class="layui-form-label">身份证号<span style="color: red">*</span></label>
                     <div class="layui-input-block">
-                        <input type="text" name="sIdentity" lay-verify="identity" placeholder="" value="${student.sIdentity }" autocomplete="off" class="layui-input">
+                        <input type="text" name="tIdentity" lay-verify="identity" placeholder="" value="${teacher.tIdentity }" autocomplete="off" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">家庭住址<span style="color: red">*</span></label>
                     <div class="layui-input-block">
-                        <input type="text" name="sAddress" lay-verify="address" autocomplete="off" placeholder="" value="${student.sAddress }" class="layui-input">
+                        <input type="text" name="tAddress" lay-verify="address" autocomplete="off" placeholder="" value="${teacher.tAddress }" class="layui-input">
                     </div>
                 </div>
             </div>
@@ -170,7 +163,7 @@ pageContext.setAttribute("url", basePath);
                                 <div class="layui-form-item">
                                     <label class="layui-form-label">QQ</label>
                                     <div class="layui-input-block">
-                                        <input type="text" name="sQQ" lay-verify="QQ" autocomplete="off" placeholder="" value="${student.sQQ }" class="layui-input">
+                                        <input type="text" name="tQQ" lay-verify="QQ" autocomplete="off" placeholder="" value="${teacher.tQQ }" class="layui-input">
                                     </div>
                                 </div>
                             </div>
@@ -178,7 +171,7 @@ pageContext.setAttribute("url", basePath);
                                 <div class="layui-form-item">
                                     <label class="layui-form-label">微信</label>
                                     <div class="layui-input-block">
-                                        <input type="text" name="sWchat" lay-verify="wchat" autocomplete="off" placeholder="" value="${student.sWchat }" class="layui-input">
+                                        <input type="text" name="tWchat" lay-verify="wchat" autocomplete="off" placeholder="" value="${teacher.tWchat }" class="layui-input">
                                     </div>
                                 </div>
                             </div>
@@ -190,7 +183,7 @@ pageContext.setAttribute("url", basePath);
                                 <div class="layui-form-item">
                                     <label class="layui-form-label">手机号码<span style="color: red">*</span></label>
                                     <div class="layui-input-block">
-                                        <input type="text" name="sPhone" lay-verify="phone" autocomplete="off" placeholder="" value="${student.sPhone }" class="layui-input">
+                                        <input type="text" name="tPhone" lay-verify="phone" autocomplete="off" placeholder="" value="${teacher.tPhone }" class="layui-input">
                                     </div>
                                 </div>
                             </div>
@@ -198,7 +191,7 @@ pageContext.setAttribute("url", basePath);
                                 <div class="layui-form-item">
                                     <label class="layui-form-label">邮箱地址<span style="color: red">*</span></label>
                                     <div class="layui-input-block">
-                                        <input type="text" name="sEmail" lay-verify="email" autocomplete="off" placeholder="" value="${student.sEmail }" class="layui-input">
+                                        <input type="text" name="tEmail" lay-verify="email" autocomplete="off" placeholder="" value="${teacher.tEmail }" class="layui-input">
                                     </div>
                                 </div>
                             </div>
@@ -229,7 +222,7 @@ pageContext.setAttribute("url", basePath);
         var upload = layui.upload;
         upload.render({
            elem: '#upload',
-           url: '${url}uploadServlet?type=uploadStudentImage',
+           url: '${url}uploadServlet?type=uploadTeacherImage',
            accept:'images',
            exts:'jpg|png|gif|bmp|jpeg',
            size:2048,
@@ -242,7 +235,7 @@ pageContext.setAttribute("url", basePath);
                 });
             },
             done: function(res){
-                $("#hiddenInput").html("<input type='hidden' name='sPhotoPath' value='"
+                $("#hiddenInput").html("<input type='hidden' name='tPhotoPath' value='"
                         +res.imgurl+"'>");
             }
         });
@@ -254,7 +247,7 @@ pageContext.setAttribute("url", basePath);
 
         //自定义验证规则
         form.verify({
-            sname: function(value){
+            tname: function(value){
                 if(value.length < 1){
                     return '姓名不能为空';
                 }
@@ -282,18 +275,18 @@ pageContext.setAttribute("url", basePath);
                     return '家庭地址不能为空';
                 }
             },
-            sSno: function(value){
+            tSno: function(value){
                 if (value.length == 0){
-                    return "学号不能为空";
+                    return "工号不能为空";
                 }
                 if (!new RegExp("^[0-9]*$").test(value)){
-                    return '学号必须是数字';
+                    return '工号必须是数字';
                 }
                 if (value.length < 10){
-                    return '学号少于10位';
+                    return '工号少于10位';
                 }
                 if (value.length > 10){
-                    return '学号多于10位';
+                    return '工号多于10位';
                 }
             }
         });
@@ -303,26 +296,12 @@ pageContext.setAttribute("url", basePath);
             //layer.alert(JSON.stringify(data.field), {
               //  title: '最终的提交信息'
             //});
-            var url = "${url}administratorServlet?type=updateStudent";
+            var url = "${url}administratorServlet?type=updateTeacher";
             $.post(url,data.field,function(result){
                 alert(result);
-                window.location.href = "${url}administratorServlet?type=getStudentBySno&toPage=editStudent&sSno=${student.sSno}";
+                window.location.href = "${url}administratorServlet?type=getTeacherBySno&toPage=editTeacher&tSno=${teacher.tSno}";
             },"text");          
             return false;
-        });
-       
-        //联动二级
-        form.on('select(department)', function(data) {
-            var url = "${url}administratorServlet?type=listProfessionByDepartment";
-            $.post(url,{"dId":data.value},function(result){
-                var info = "<option value=''>请选择专业</option>";
-                for (var i = 0; i < result.length; i++) {
-                    var obj = result[i];
-                    info += "<option value='" + obj.pId + "'>" + obj.pName + "</option>";                                      
-                }
-                $("#profession").html(info);
-                form.render(); //重新渲染表单               
-           },"json");
         });
     });
 
@@ -331,7 +310,7 @@ pageContext.setAttribute("url", basePath);
 
         //执行一个laydate实例
         laydate.render({
-            elem: '#sBirthday' //指定元素
+            elem: '#tBirthday' //指定元素
         });
     });       
     
@@ -340,10 +319,10 @@ pageContext.setAttribute("url", basePath);
         var info = "";
         var sex = ["男","女"]
     	for (var i = 0; i < sex.length; i++) {   		
-    		if ("${student.sSex}" == sex[i]) {
-    			info += "<input type='radio' name='sSex' value='" + sex[i] + "' title='" + sex[i] + "' checked=''>";
+    		if ("${teacher.tSex}" == sex[i]) {
+    			info += "<input type='radio' name='tSex' value='" + sex[i] + "' title='" + sex[i] + "' checked=''>";
     		} else {
-    			info += "<input type='radio' name='sSex' value='" + sex[i] + "' title='" + sex[i] + "'>";
+    			info += "<input type='radio' name='tSex' value='" + sex[i] + "' title='" + sex[i] + "'>";
     		}
     	}
         $("#sex").html(info);
@@ -364,7 +343,7 @@ pageContext.setAttribute("url", basePath);
             	var info = "<option value=''>院系</option>";
                 for (var i = 0; i < data.length; i++) {
                     var obj = data[i];
-                    if ("${student.dId}" == obj.dId){
+                    if ("${teacher.dId}" == obj.dId){
                         info += "<option value='" + obj.dId + "' selected>" + obj.dName + "</option>";
                     } else {
                         info += "<option value='" + obj.dId + "'>" + obj.dName + "</option>";
@@ -381,37 +360,7 @@ pageContext.setAttribute("url", basePath);
                 jQuery(document).queue("post", [] );
             }
         });
-    }    
-    
-    //异步请求根据院系id获取专业列表并判断是否与要编辑的学生专业一致
-    function ajaxListProfession(){
-        $.ajax({
-            url: "${url}administratorServlet?type=listProfessionByDepartment",
-            data: {"dId":"${student.dId}"}, 
-            type:"post",
-            dataType: "json",
-            success:function(result){
-            	var info = "<option value=''>专业</option>";
-                for (var i = 0; i < result.length; i++) {
-                    var obj = result[i];
-                    if ("${student.pId}" == obj.pId){
-                        info += "<option value='" + obj.pId + "' selected>" + obj.pName + "</option>";
-                    } else {
-                        info += "<option value='" + obj.pId + "'>" + obj.pName + "</option>";
-                    }                                     
-                }
-                $("#profession").html(info);
-                layui.use('form', function(){
-                    var form = layui.form;
-                    form.render();
-                   });
-                $(document).dequeue("post"); 
-            },
-            error:function(){
-                jQuery(document).queue("post", [] );
-            }
-        });
-    }
+    }        
     
     //异步请求获取政治面貌列表并判断是否与要编辑的学生政治面貌一致
     function ajaxListPolitical(){
@@ -424,7 +373,7 @@ pageContext.setAttribute("url", basePath);
             	var info = "<option value=''>政治面貌</option>";
                 for (var i = 0; i < result.length; i++) {
                     var obj = result[i];
-                    if ("${student.sPolitical}" == obj.name){
+                    if ("${teacher.tPolitical}" == obj.name){
                         info += "<option value='" + obj.name + "' selected>" + obj.name + "</option>";
                     } else {
                         info += "<option value='" + obj.name + "'>" + obj.name + "</option>";
@@ -447,7 +396,6 @@ pageContext.setAttribute("url", basePath);
     	
     	//使用jQuery队列解决异步请求socket closed异常
     	$(document).queue("post",ajaxListDepartment);
-        $(document).queue("post",ajaxListProfession);
         $(document).queue("post",ajaxListPolitical);
         
         $(document).dequeue("post");

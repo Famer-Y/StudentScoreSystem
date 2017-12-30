@@ -10,7 +10,7 @@ pageContext.setAttribute("url", basePath);
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>新增学生信息</title>
+	<title>新增教师信息</title>
 	<meta name="renderer" content="webkit">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -40,14 +40,13 @@ pageContext.setAttribute("url", basePath);
 </head>
 <body>
 <div class="layui-container" style="margin-top: 10px">
-<!-- <%//=basePath %>administratorServlet?type=addStudent-->
 	<form action="" class="layui-form" method="post" id="addinfomation">
 	   <div id="hiddenInput">
-	   <input type="hidden" name="sPhotoPath" value="">
+	   <input type="hidden" name="tPhotoPath" value="">
 	   </div>
 		<div class="layui-row">
 			<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-				<legend>新增学生信息</legend>
+				<legend>新增教师信息</legend>
 			</fieldset>
 			<!-- 学生详情中用到的按钮组 -->
 			<!--<div class="layui-col-md12">
@@ -86,9 +85,9 @@ pageContext.setAttribute("url", basePath);
 						</fieldset>
 						<div class="layui-form-item">
 							<div class="layui-inline">
-								<label class="layui-form-label">学号<span style="color: red">*</span></label>
+								<label class="layui-form-label">工号<span style="color: red">*</span></label>
 								<div class="layui-input-inline">
-									<input type="text" name="sSno" lay-verify="sSno" placeholder="" autocomplete="off" class="layui-input">
+									<input type="text" name="tSno" lay-verify="tSno" placeholder="" autocomplete="off" class="layui-input">
 								</div>
 							</div>
 						</div>
@@ -96,13 +95,13 @@ pageContext.setAttribute("url", basePath);
 							<div class="layui-inline">
 								<label class="layui-form-label">姓名<span style="color: red">*</span></label>
 								<div class="layui-input-inline">
-									<input type="text" name="sName" lay-verify="sname" placeholder="" autocomplete="off" class="layui-input">
+									<input type="text" name="tName" lay-verify="name" placeholder="" autocomplete="off" class="layui-input">
 								</div>
 							</div>
 							<div class="layui-inline">
 								<label class="layui-form-label">政治面貌<span style="color: red">*</span></label>
 								<div class="layui-input-inline">
-									<select name="sPolitical" lay-filter="political" lay-verify="political" id="political">
+									<select name="tPolitical" lay-filter="political" lay-verify="political" id="political">
 
 									</select>
 								</div>
@@ -112,15 +111,15 @@ pageContext.setAttribute("url", basePath);
 							<div class="layui-inline">
 								<label class="layui-form-label">性别<span style="color: red">*</span></label>
 								<div class="layui-input-inline">
-									<input type="radio" name="sSex" value="男" title="男" checked="">
-									<input type="radio" name="sSex" value="女" title="女">
+									<input type="radio" name="tSex" value="男" title="男" checked="">
+									<input type="radio" name="tSex" value="女" title="女">
 								  	<!-- <input type="radio" name="sex" value="禁" title="禁用" disabled=""> -->
 								</div>
 							</div>
 							<div class="layui-inline">
 								<label class="layui-form-label">出生日期<span style="color: red">*</span></label>
 								<div class="layui-input-inline">
-									<input type="text" name="sBirthday" id="sBirthday" lay-verify="date" placeholder="yyyy-mm-dd" autocomplete="off" class="layui-input">
+									<input type="text" name="tBirthday" id="tBirthday" lay-verify="date" placeholder="yyyy-mm-dd" autocomplete="off" class="layui-input">
 								</div>
 							</div>
 						</div>
@@ -133,6 +132,7 @@ pageContext.setAttribute("url", basePath);
 									</select>
 								</div>
 							</div>
+							<!-- 
 							<div class="layui-inline">
 								<label class="layui-form-label">专业<span style="color: red">*</span></label>
 								<div class="layui-input-inline">
@@ -141,6 +141,7 @@ pageContext.setAttribute("url", basePath);
 									</select>
 								</div>
 							</div>
+							 -->
 						</div>
 					</div>
 				</div>
@@ -152,13 +153,13 @@ pageContext.setAttribute("url", basePath);
 				<div class="layui-form-item">
 					<label class="layui-form-label">身份证号<span style="color: red">*</span></label>
 					<div class="layui-input-block">
-						<input type="text" name="sIdentity" lay-verify="identity" placeholder="请输入18位身份证号码" autocomplete="off" class="layui-input">
+						<input type="text" name="tIdentity" lay-verify="identity" placeholder="请输入18位身份证号码" autocomplete="off" class="layui-input">
 					</div>
 				</div>
 				<div class="layui-form-item">
 					<label class="layui-form-label">家庭住址<span style="color: red">*</span></label>
 					<div class="layui-input-block">
-						<input type="text" name="sAddress" lay-verify="address" autocomplete="off" placeholder="例：xx省xx市xx县xx乡/镇xx村" class="layui-input">
+						<input type="text" name="tAddress" lay-verify="address" autocomplete="off" placeholder="例：xx省xx市xx县xx乡/镇xx村" class="layui-input">
 					</div>
 				</div>
 			</div>
@@ -173,7 +174,7 @@ pageContext.setAttribute("url", basePath);
 								<div class="layui-form-item">
 									<label class="layui-form-label">QQ</label>
 									<div class="layui-input-block">
-										<input type="text" name="sQQ" lay-verify="QQ" autocomplete="off" placeholder="" class="layui-input">
+										<input type="text" name="tQQ" lay-verify="QQ" autocomplete="off" placeholder="" class="layui-input">
 									</div>
 								</div>
 							</div>
@@ -181,7 +182,7 @@ pageContext.setAttribute("url", basePath);
 								<div class="layui-form-item">
 									<label class="layui-form-label">微信</label>
 									<div class="layui-input-block">
-										<input type="text" name="sWchat" lay-verify="wchat" autocomplete="off" placeholder="" class="layui-input">
+										<input type="text" name="tWchat" lay-verify="wchat" autocomplete="off" placeholder="" class="layui-input">
 									</div>
 								</div>
 							</div>
@@ -193,7 +194,7 @@ pageContext.setAttribute("url", basePath);
 								<div class="layui-form-item">
 									<label class="layui-form-label">手机号码<span style="color: red">*</span></label>
 									<div class="layui-input-block">
-										<input type="text" name="sPhone" lay-verify="phone" autocomplete="off" placeholder="" class="layui-input">
+										<input type="text" name="tPhone" lay-verify="phone" autocomplete="off" placeholder="" class="layui-input">
 									</div>
 								</div>
 							</div>
@@ -201,7 +202,7 @@ pageContext.setAttribute("url", basePath);
 								<div class="layui-form-item">
 									<label class="layui-form-label">邮箱地址<span style="color: red">*</span></label>
 									<div class="layui-input-block">
-										<input type="text" name="sEmail" lay-verify="email" autocomplete="off" placeholder="" class="layui-input">
+										<input type="text" name="tEmail" lay-verify="email" autocomplete="off" placeholder="" class="layui-input">
 									</div>
 								</div>
 							</div>
@@ -232,7 +233,7 @@ pageContext.setAttribute("url", basePath);
 	    var upload = layui.upload;
 	    upload.render({
 	       elem: '#upload',
-	       url: '${url}uploadServlet?type=uploadStudentImage',
+	       url: '${url}uploadServlet?type=uploadTeacherImage',
 	       accept:'images',
 	       exts:'jpg|png|gif|bmp|jpeg',
 	       size:2048,
@@ -245,7 +246,7 @@ pageContext.setAttribute("url", basePath);
 	            });
 	        },
 	        done: function(res){
-	            $("#hiddenInput").html("<input type='hidden' name='sPhotoPath' value='"
+	            $("#hiddenInput").html("<input type='hidden' name='tPhotoPath' value='"
 	                    +res.imgurl+"'>");
 	        }
 	    });
@@ -257,7 +258,7 @@ pageContext.setAttribute("url", basePath);
 
         //自定义验证规则
         form.verify({
-            sname: function(value){
+            tname: function(value){
                 if(value.length < 1){
                     return '姓名不能为空';
                 }
@@ -274,29 +275,24 @@ pageContext.setAttribute("url", basePath);
                 if(value.length < 1){
                     return '院系不能为空';
                 }
-            },
-            profession: function (value) {
-                if(value.length < 1){
-                    return '专业不能为空';
-                }
-            },
+            },   
             address: function (value) {
                 if(value.length < 1){
                     return '家庭地址不能为空';
                 }
             },
-            sSno: function(value){
+            tSno: function(value){
                 if (value.length == 0){
-                    return "学号不能为空";
+                    return "工号不能为空";
                 }
             	if (!new RegExp("^[0-9]*$").test(value)){
-               		return '学号必须是数字';
+               		return '工号必须是数字';
             	}
             	if (value.length < 10){
-            		return '学号少于10位';
+            		return '工号少于10位';
             	}
             	if (value.length > 10){
-                    return '学号多于10位';
+                    return '工号多于10位';
                 }
             }
         });
@@ -306,7 +302,7 @@ pageContext.setAttribute("url", basePath);
         	//layer.alert(JSON.stringify(data.field), {
         	  //  title: '最终的提交信息'
             //});
-        	var url = "${url}administratorServlet?type=addStudent";
+        	var url = "${url}administratorServlet?type=addTeacher";
         	$.post(url,data.field,function(result){
         		layer.msg(result);
         		$("#reset").trigger("click");
@@ -335,7 +331,7 @@ pageContext.setAttribute("url", basePath);
 
         //执行一个laydate实例
         laydate.render({
-            elem: '#sBirthday' //指定元素
+            elem: '#tBirthday' //指定元素
         });
     });
 

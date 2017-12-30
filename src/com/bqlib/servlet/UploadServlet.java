@@ -49,14 +49,56 @@ public class UploadServlet extends HttpServlet {
         response.setCharacterEncoding("utf-8");
         response.setContentType("text/html; charset=UTF-8");
         String type = request.getParameter("type");
-        if ("uploadImage".equals(type)){
-            uploadImage(request, response);
-            System.out.println("上传照片");
+        if ("uploadStudentImage".equals(type)){
+            uploadStudentImage(request, response);
+            System.out.println("上传学生照片");
+            return ;
+        }
+        if ("uploadTeacherImage".equals(type)){
+            uploadTeacherImage(request, response);
+            System.out.println("上传教师照片");
             return ;
         }
 	}
 	
-	protected void uploadImage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void uploadTeacherImage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    try {   
+            DiskFileItemFactory factory = new DiskFileItemFactory();   
+            factory.setSizeThreshold(4096); // 设置缓冲区大小，这里是4kb   
+            ServletFileUpload upload = new ServletFileUpload(factory);   
+            upload.setSizeMax(4194304); // 设置最大文件尺寸，这里是4MB   
+            List<FileItem> items = upload.parseRequest(request);// 得到所有的文件   
+            Iterator<FileItem> i = items.iterator();  
+            String fileNames="";
+            while (i.hasNext()) {  
+                FileItem fi = (FileItem) i.next();  
+                String fileName = fi.getName();  
+                String uuid  = UUID.randomUUID().toString();
+                if (fileName != null) {  
+                    fileName=fileName.substring(fileName.lastIndexOf("\\")+1);
+                    String path = request.getServletContext().getRealPath("\\admin\\teacher\\photo\\"+ uuid +fileName);  
+                    File savedFile = new File(path);  
+                    fi.write(savedFile);
+                    fileNames+= uuid + fileName+",";
+                }  
+            }  
+            if(fileNames.indexOf(",")!=-1){
+                fileNames =fileNames.substring(0,fileNames.length() -1) ;   
+            }
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("msg", "上传成功");
+            map.put("imgurl",fileNames);
+            String jsonstr = JSONObject.fromObject(map).toString();             
+            PrintWriter out = response.getWriter();
+            out.write(jsonstr);
+            out.flush();
+            out.close();
+        } catch (Exception e) {  
+            e.printStackTrace();
+        }   
+	}
+	
+	protected void uploadStudentImage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    try {   
               DiskFileItemFactory factory = new DiskFileItemFactory();   
               factory.setSizeThreshold(4096); // 设置缓冲区大小，这里是4kb   

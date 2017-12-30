@@ -70,7 +70,7 @@ public class StudentDao {
 	}
 	
 	/**
-	 * 统计同名的学生个数
+	 * 统计同名的学生数
 	 * @param sname
 	 * @return
 	 * @throws Exception

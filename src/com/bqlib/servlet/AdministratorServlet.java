@@ -15,15 +15,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.bqlib.biz.AdministratorBiz;
 import com.bqlib.biz.DepartmentBiz;
 import com.bqlib.biz.PoliticalBiz;
 import com.bqlib.biz.ProfessionBiz;
 import com.bqlib.biz.StudentBiz;
+import com.bqlib.biz.TeacherBiz;
 import com.bqlib.model.Department;
 import com.bqlib.model.Political;
 import com.bqlib.model.Profession;
 import com.bqlib.model.Student;
+import com.bqlib.model.Teacher;
 import com.bqlib.util.JsonDateValueProcessorUtil;
 
 import net.sf.json.JSONArray;
@@ -36,6 +37,7 @@ import net.sf.json.JsonConfig;
 public class AdministratorServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private StudentBiz studentBiz = new StudentBiz();
+	private TeacherBiz teacherBiz = new TeacherBiz();
 	private DepartmentBiz departmentBiz = new DepartmentBiz();
 	private ProfessionBiz professionBiz = new ProfessionBiz();
 	private PoliticalBiz politicalBiz = new PoliticalBiz();
@@ -184,6 +186,435 @@ public class AdministratorServlet extends HttpServlet {
             System.out.println("修改专业");
             return ;
         }
+		if ("addTeacher".equals(type)) {
+		    addTeacher(request, response);
+            System.out.println("添加教师");
+            return ;
+        }
+		if ("listTeacherLimit".equals(type)) {
+		    listTeacherLimit(request, response);
+            System.out.println("获取一页教师");
+            return ;
+        }
+		if ("getTeacherBySno".equals(type)) {
+		    getTeacherBySno(request, response);
+            System.out.println("根据工号获取教师信息");
+            return ;
+        }
+		if ("updateTeacher".equals(type)) {
+		    updateTeacher(request, response);
+            System.out.println("修改教师信息");
+            return ;
+        }
+		if ("deleteTeacher".equals(type)) {
+		    deleteTeacherById(request, response);
+            System.out.println("删除教师信息");
+            return ;
+        }
+		if ("lisTeacherLimitByName".equals(type)) {
+		    listTeacherLimitByName(request, response);
+            System.out.println("根据姓名获取教师列表");
+            return ;
+        }
+		if ("listTeacherLimitByDepartment".equals(type)) {
+		    listTeacherLimitByDepartment(request, response);
+            System.out.println("根据院系id获取教师列表");
+            return ;
+        }
+		if ("getTeacherBySnoForTable".equals(type)) {
+		    getTeacherBySnoForTable(request, response);
+            System.out.println("根据工号获取教师(用于表格显示)");
+            return ;
+        }
+	}
+	
+	protected void getTeacherBySnoForTable(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        PrintWriter out = response.getWriter();
+        try {
+            String sno = request.getParameter("sno");
+            if (sno == null){
+                return ;
+            }
+            Teacher teacher = teacherBiz.getTeacherBySno(sno);            
+            
+            JsonConfig jsonConfig = new JsonConfig();  
+            jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessorUtil());
+            JSONObject json = new JSONObject();
+            
+            //当查询学生为空时，直接向前台发送一个空的
+            if (null == teacher) {
+                json.put("code", 0);
+                json.put("msg", "");
+                json.put("count", 0); 
+                json.put("data","");
+                out.write(json.toString());
+                out.flush();
+                out.close();
+                return ;
+            }
+            
+            JSONArray jsonArr = JSONArray.fromObject(teacher, jsonConfig);
+            json.put("code", 0);
+            json.put("msg", "");
+            json.put("count", 1); 
+            json.put("data", jsonArr);
+
+            out.write(json.toString());
+            out.flush();
+            out.close();
+           
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
+    }
+	
+	protected void listTeacherLimitByDepartment(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    PrintWriter out = response.getWriter();
+        try {
+            String keyword = request.getParameter("keyword");
+            String pIndex = request.getParameter("page"); //获取数据表格请求的页数
+            String limit = request.getParameter("limit"); //获取数据表格请求的每页显示的条数
+            String dId = request.getParameter("dId");
+            Integer start = 0;
+            Integer pageSize = 0;           
+            
+            int countTeacherByDepartment = teacherBiz.countTeacherByDepartment(dId);
+            
+            if (null != limit) {
+                pageSize = Integer.parseInt(limit);
+            } else {
+                pageSize = 10;
+            }
+            
+            if (null != pIndex) {
+                Integer index = Integer.parseInt(pIndex);
+                if (countTeacherByDepartment > pageSize){
+                    start = (index - 1) * pageSize;
+                }               
+            }
+            JsonConfig jsonConfig = new JsonConfig();  
+            jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessorUtil());
+            JSONObject json = new JSONObject();
+            
+            List<Teacher> listTeacher = teacherBiz.listTeacherLimitByDepartment(dId, start, pageSize);   
+            if (null == listTeacher) {
+                json.put("code", 0);
+                json.put("msg", "");
+                json.put("count", 0); 
+                json.put("data","");
+                out.write(json.toString());
+                out.flush();
+                out.close();
+                return ;
+            }
+            JSONArray jsonArr = JSONArray.fromObject(listTeacher, jsonConfig);
+
+            json.put("code", 0);
+            json.put("msg", "");
+            json.put("count", countTeacherByDepartment); 
+            json.put("data", jsonArr);
+
+            out.write(json.toString());
+            out.flush();
+            out.close();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
+	}
+	
+	protected void listTeacherLimitByName(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    PrintWriter out = response.getWriter();
+        try {
+            String keyword = request.getParameter("keyword");
+            String pIndex = request.getParameter("page"); //获取数据表格请求的页数
+            String limit = request.getParameter("limit"); //获取数据表格请求的每页显示的条数
+            String tname = request.getParameter("tname");
+            tname = URLDecoder.decode(tname,"UTF-8");
+            Integer start = 0;
+            Integer pageSize = 0;
+            
+            tname = "'" +tname+ "'";
+            
+            int countTeacherByName = teacherBiz.countTeacherByName(tname);
+            
+            if (null != limit) {
+                pageSize = Integer.parseInt(limit);
+            } else {
+                pageSize = 10;
+            }
+            
+            if (null != pIndex) {
+                Integer index = Integer.parseInt(pIndex);
+                if (countTeacherByName > pageSize){
+                    start = (index - 1) * pageSize;
+                }               
+            }
+            JsonConfig jsonConfig = new JsonConfig();  
+            jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessorUtil());
+            JSONObject json = new JSONObject();
+            
+            List<Teacher> listTeacher = teacherBiz.listTeacherLimitByName(tname, start, pageSize);   
+            if (null == listTeacher) {
+                json.put("code", 0);
+                json.put("msg", "");
+                json.put("count", 0); 
+                json.put("data","");
+                out.write(json.toString());
+                out.flush();
+                out.close();
+                return ;
+            }
+            JSONArray jsonArr = JSONArray.fromObject(listTeacher, jsonConfig);
+
+            json.put("code", 0);
+            json.put("msg", "");
+            json.put("count", countTeacherByName); 
+            json.put("data", jsonArr);
+
+            out.write(json.toString());
+            out.flush();
+            out.close();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
+	}
+	
+	protected void deleteTeacherById(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        PrintWriter out = response.getWriter();
+        try {
+            String tSno = request.getParameter("tSno");
+            
+            if (tSno == null){
+                return ;
+            }
+            
+            int num = teacherBiz.deleteTeacherById(tSno);           
+                         
+            if (num > 0) {
+                out.write("删除成功！！");
+            } else {
+                out.write("删除失败！！");
+            }
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            //response.sendRedirect("error.jsp");
+        }
+    }
+	
+	protected void updateTeacher(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    
+	    PrintWriter out = response.getWriter();
+        try{
+            Teacher teacher = new Teacher();
+            String tSno = request.getParameter("tSno");
+            String tPhotoPath = request.getParameter("tPhotoPath");
+            String tName = request.getParameter("tName");
+            String tSex = request.getParameter("tSex");
+            String tPolitical = request.getParameter("tPolitical");
+            String tBirthday = request.getParameter("tBirthday");
+            String dId = request.getParameter("dId");
+            String tIdentity = request.getParameter("tIdentity");
+            String tAddress = request.getParameter("tAddress");
+            String tQQ = request.getParameter("tQQ");
+            String tWchat = request.getParameter("tWchat");
+            String tPhone = request.getParameter("tPhone");
+            String tEmail = request.getParameter("tEmail");
+            
+    
+            //格式化表单中的时间
+            SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+            Date birthday = null;
+            birthday = sdf1.parse(tBirthday);
+                       
+            teacher.settPhotoPath(tPhotoPath);
+            teacher.settSno(tSno);
+            teacher.settPassword(tSno);
+            teacher.settName(tName);
+            teacher.settSex(tSex);
+            teacher.settPolitical(tPolitical);
+            teacher.settBirthday(birthday);
+            teacher.setdId(dId);
+            teacher.settIdentity(tIdentity);
+            teacher.settAddress(tAddress);
+            teacher.settQQ(tQQ);
+            teacher.settWchat(tWchat);
+            teacher.settPhone(tPhone);
+            teacher.settEmail(tEmail);
+            int num = teacherBiz.updateTeacher(teacher);
+            
+            if (num > 0) {
+                out.write("修改成功！！");
+            } else {
+                out.write("修改失败！！");
+            }
+            out.flush();
+            out.close();
+            
+        } catch (Exception e){
+            e.printStackTrace();
+            out.write("修改失败！！");
+        }
+	}
+	
+	protected void getTeacherBySno(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    try {
+            String tSno = request.getParameter("tSno");
+            String toPage = request.getParameter("toPage");
+            String jumpPage = null;
+            if (tSno == null){
+                return ;
+            }
+            if (toPage == null){
+                return ;
+            }
+            if ("editTeacher".equals(toPage)) {                
+                jumpPage = "admin/teacher/editTeacher.jsp";
+                
+            } else if ("teacherDetial".equals(toPage)) {
+                jumpPage = "admin/teacher/teacherDetial.jsp";
+                
+            }
+            Teacher teacher = teacherBiz.getTeacherBySno(tSno);
+            
+            if (teacher != null){
+                System.out.println("查询成功");
+                request.getSession().setAttribute("teacher", teacher);
+                response.sendRedirect(jumpPage);
+            } else {
+                System.out.println("查无此人！！！");
+                response.sendRedirect("error.jsp");
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
+	}
+	
+	protected void listTeacherLimit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        
+        PrintWriter out = response.getWriter();
+        try {
+            String keyword = request.getParameter("keyword");
+            String pIndex = request.getParameter("page"); //获取数据表格请求的页数
+            String limit = request.getParameter("limit"); //获取数据表格请求的每页显示的条数
+            
+            Integer start = 0;
+            Integer pageSize = 0;
+            
+            int countTeacherAll = teacherBiz.countTeacher();
+            
+            if (null != limit) {
+                pageSize = Integer.parseInt(limit);
+            } else {
+                pageSize = 10;
+            }
+            
+            if (null != pIndex) {
+                Integer index = Integer.parseInt(pIndex);
+                if (countTeacherAll > pageSize){
+                    start = (index - 1) * pageSize;
+                }               
+            }
+            JsonConfig jsonConfig = new JsonConfig();  
+            jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessorUtil());
+            JSONObject json = new JSONObject();
+            
+            List<Teacher> listTeacher = teacherBiz.listTeacherLimit(start, pageSize);   
+            if (null == listTeacher) {
+                json.put("code", 0);
+                json.put("msg", "");
+                json.put("count", 0); 
+                json.put("data","");
+                out.write(json.toString());
+                out.flush();
+                out.close();
+                return ;
+            }
+            JSONArray jsonArr = JSONArray.fromObject(listTeacher, jsonConfig);
+
+            json.put("code", 0);
+            json.put("msg", "");
+            json.put("count", countTeacherAll); 
+            json.put("data", jsonArr);
+
+            out.write(json.toString());
+            out.flush();
+            out.close();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
+    }
+	
+	protected void addTeacher(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    PrintWriter out = response.getWriter();
+        try{
+            Teacher teacher = new Teacher();
+            String tSno = request.getParameter("tSno");
+            Teacher isExist = teacherBiz.getTeacherBySno(tSno);
+            if (isExist != null) {
+                out.write("该工号已存在");
+                return ;
+            }
+            String tPhotoPath = request.getParameter("tPhotoPath");
+            String tName = request.getParameter("tName");
+            String tSex = request.getParameter("tSex");
+            String tPolitical = request.getParameter("tPolitical");
+            String tBirthday = request.getParameter("tBirthday");
+            String dId = request.getParameter("dId");
+            String tIdentity = request.getParameter("tIdentity");
+            String tAddress = request.getParameter("tAddress");
+            String tQQ = request.getParameter("tQQ");
+            String tWchat = request.getParameter("tWchat");
+            String tPhone = request.getParameter("tPhone");
+            String tEmail = request.getParameter("tEmail");
+            
+            if (tPhotoPath.equals("") || null == tPhotoPath){
+                tPhotoPath = "default.jpg";
+            }
+    
+            //格式化表单中的时间
+            SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+            Date birthday = null;
+            birthday = sdf1.parse(tBirthday);
+                       
+            teacher.settPhotoPath(tPhotoPath);
+            teacher.settSno(tSno);
+            teacher.settPassword(tSno);
+            teacher.settName(tName);
+            teacher.settSex(tSex);
+            teacher.settPolitical(tPolitical);
+            teacher.settBirthday(birthday);
+            teacher.setdId(dId);
+            teacher.settIdentity(tIdentity);
+            teacher.settAddress(tAddress);
+            teacher.settQQ(tQQ);
+            teacher.settWchat(tWchat);
+            teacher.settPhone(tPhone);
+            teacher.settEmail(tEmail);
+            int num = teacherBiz.addTeacher(teacher);
+            
+            if (num > 0) {
+                out.write("添加成功！！");
+            } else {
+                out.write("添加失败！！");
+            }
+            out.flush();
+            out.close();
+            
+        } catch (Exception e){
+            e.printStackTrace();
+            out.write("添加失败！！");
+        }
 	}
 	
 	protected void updateProfession(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -235,7 +666,6 @@ public class AdministratorServlet extends HttpServlet {
             out.close();
         } catch (Exception e) {
             e.printStackTrace();
-            out.write("删除失败！！");
             //response.sendRedirect("error.jsp");
         }
     }
@@ -372,7 +802,6 @@ public class AdministratorServlet extends HttpServlet {
             out.close();
         } catch (Exception e) {
             e.printStackTrace();
-            out.write("删除失败！！");
             //response.sendRedirect("error.jsp");
         }
     }
@@ -977,7 +1406,6 @@ public class AdministratorServlet extends HttpServlet {
             out.close();
 	    } catch (Exception e) {
 	        e.printStackTrace();
-	        out.write("删除失败！！");
 	        //response.sendRedirect("error.jsp");
 	    }
 	}
