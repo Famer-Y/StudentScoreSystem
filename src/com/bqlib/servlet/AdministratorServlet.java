@@ -253,7 +253,7 @@ public class AdministratorServlet extends HttpServlet {
 		    deleteCourseById(request, response);
             System.out.println("删除课程");
             return ;
-        }
+        }		
 	}
 	
 	protected void deleteCourseById(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
