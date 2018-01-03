@@ -35,7 +35,7 @@ pageContext.setAttribute("url", basePath);
     <div class="layui-col-md12 color-black">
         <div class="layui-row">
             <div class="layui-col-md4">
-                <span class="title-font"><i class="layui-icon">&#xe623;查询学生信息</i></span>
+                <span class="title-font"><i class="layui-icon">&#xe623;查询教师信息</i></span>
             </div>
 
             <div class="layui-col-md4 layui-col-md-offset4">
@@ -57,7 +57,7 @@ pageContext.setAttribute("url", basePath);
                 <div class="layui-col-md2">
                     <div class="layui-input-block">
                         <select id="condition" lay-filter="condition" lay-verify="condition">
-                            <option value="1">按学号查询</option>
+                            <option value="1">按工号查询</option>
                             <option value="2">按姓名查询</option>
                             <option value="3">按院系查询</option>
                         </select>
