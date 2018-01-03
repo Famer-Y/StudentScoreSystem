@@ -15,11 +15,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bqlib.biz.CourseBiz;
 import com.bqlib.biz.DepartmentBiz;
 import com.bqlib.biz.PoliticalBiz;
 import com.bqlib.biz.ProfessionBiz;
 import com.bqlib.biz.StudentBiz;
 import com.bqlib.biz.TeacherBiz;
+import com.bqlib.model.Course;
 import com.bqlib.model.Department;
 import com.bqlib.model.Political;
 import com.bqlib.model.Profession;
@@ -41,6 +43,7 @@ public class AdministratorServlet extends HttpServlet {
 	private DepartmentBiz departmentBiz = new DepartmentBiz();
 	private ProfessionBiz professionBiz = new ProfessionBiz();
 	private PoliticalBiz politicalBiz = new PoliticalBiz();
+	private CourseBiz courseBiz = new CourseBiz();
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -225,6 +228,224 @@ public class AdministratorServlet extends HttpServlet {
 		    getTeacherBySnoForTable(request, response);
             System.out.println("根据工号获取教师(用于表格显示)");
             return ;
+        }
+		if ("addCourse".equals(type)) {
+		    addCourse(request, response);
+            System.out.println("添加课程");
+            return ;
+        }
+		if ("listCourseLimit".equals(type)) {
+		    listCourseLimit(request, response);
+            System.out.println("获取课程列表");
+            return ;
+        }
+		if ("editCourse".equals(type)) {
+		    editCourse(request, response);
+            System.out.println("编辑课程");
+            return ;
+        }
+		if ("getCourseById".equals(type)) {
+		    getCourseById(request, response);
+            System.out.println("根据id获取课程");
+            return ;
+        }
+		if ("deleteCourseById".equals(type)) {
+		    deleteCourseById(request, response);
+            System.out.println("删除课程");
+            return ;
+        }
+	}
+	
+	protected void deleteCourseById(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        PrintWriter out = response.getWriter();
+        try {
+            String cId = request.getParameter("cId");
+            
+            if (cId == null){
+                return ;
+            }
+            
+            int num = courseBiz.deleteCourse(Integer.parseInt(cId));           
+                         
+            if (num > 0) {
+                out.write("删除成功！！");
+            } else {
+                out.write("删除失败！！");
+            }
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            //response.sendRedirect("error.jsp");
+        }
+    }
+	
+	protected void getCourseById(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    try {
+            String cId = request.getParameter("cId");
+            String jumpPage = null;
+            if (cId == null){
+                return ;
+            }
+            
+            Course course = courseBiz.getCourseById(Integer.parseInt(cId));
+            
+            if (course != null){
+                System.out.println("查询成功");
+                request.getSession().setAttribute("course", course);
+                response.sendRedirect("admin/course/editCourse.jsp");
+            } else {
+                System.out.println("查无此人！！！");
+                response.sendRedirect("error.jsp");
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
+    }
+	
+	protected void editCourse(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    PrintWriter out = response.getWriter();
+        try{
+            Course course = new Course();
+            String cId = request.getParameter("cId");
+            String cName = request.getParameter("cName");
+            String cType = request.getParameter("cType");
+            String cExamtype = request.getParameter("cExamtype");
+            String cTheoryHours = request.getParameter("cTheoryHours");
+            String cExperimentalHours = request.getParameter("cExperimentalHours");
+            String cCredit = request.getParameter("cCredit");   
+            if (cTheoryHours.equals("") || cTheoryHours == null) {
+                cTheoryHours = "0";
+            }
+            if (cExperimentalHours.equals("") || cExperimentalHours == null) {
+                cExperimentalHours = "0";
+            }
+            int cTotalHours = Integer.parseInt(cTheoryHours) + Integer.parseInt(cExperimentalHours);
+            course.setcName(cName);
+            course.setCid(Integer.parseInt(cId));
+            course.setcType(cType);
+            course.setcExamtype(cExamtype);
+            course.setcTheoryHours(Integer.parseInt(cTheoryHours));
+            course.setcExperimentalHours(Integer.parseInt(cExperimentalHours));
+            course.setcTotalHours(cTotalHours);
+            course.setcCredit(Integer.parseInt(cCredit));
+            
+            int num = courseBiz.updateCourse(course);
+            
+            if (num > 0) {
+                out.write("修改成功！！");
+            } else {
+                out.write("修改失败！！");
+            }
+            out.flush();
+            out.close();
+            
+        } catch (Exception e){
+            e.printStackTrace();
+            out.write("修改失败！！");
+        }
+	}
+	
+	protected void listCourseLimit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        PrintWriter out = response.getWriter();
+        try {
+            String keyword = request.getParameter("keyword");
+            String pIndex = request.getParameter("page"); //获取数据表格请求的页数
+            String limit = request.getParameter("limit"); //获取数据表格请求的每页显示的条数
+            Integer start = 0;
+            Integer pageSize = 0;
+            
+            int countCourse = courseBiz.countCourse();
+            
+            if (null != limit) {
+                pageSize = Integer.parseInt(limit);
+            } else {
+                pageSize = 10;
+            }
+            
+            if (null != pIndex) {
+                Integer index = Integer.parseInt(pIndex);
+                if (countCourse > pageSize){
+                    start = (index - 1) * pageSize;
+                }               
+            }
+            JsonConfig jsonConfig = new JsonConfig();  
+            jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessorUtil());
+            JSONObject json = new JSONObject();
+            
+            List<Course> listCourse = courseBiz.listCourseLimit(start, pageSize);  
+            if (null == listCourse) {
+                json.put("code", 0);
+                json.put("msg", "");
+                json.put("count", 0); 
+                json.put("data","");
+                out.write(json.toString());
+                out.flush();
+                out.close();
+                return ;
+            }
+            JSONArray jsonArr = JSONArray.fromObject(listCourse, jsonConfig);
+
+            json.put("code", 0);
+            json.put("msg", "");
+            json.put("count", countCourse); 
+            json.put("data", jsonArr);
+
+            out.write(json.toString());
+            out.flush();
+            out.close();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
+    }
+	
+	protected void addCourse(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    PrintWriter out = response.getWriter();
+        try{
+            Course course = new Course();
+            String cName = request.getParameter("cName");
+            Course isExist = courseBiz.getCourseByName(cName);
+            if (isExist != null) {
+                out.write("该课程已存在");
+                return ;
+            }
+            String cType = request.getParameter("cType");
+            String cExamtype = request.getParameter("cExamtype");
+            String cTheoryHours = request.getParameter("cTheoryHours");
+            String cExperimentalHours = request.getParameter("cExperimentalHours");
+            String cCredit = request.getParameter("cCredit");   
+            if (cTheoryHours.equals("") || cTheoryHours == null) {
+                cTheoryHours = "0";
+            }
+            if (cExperimentalHours.equals("") || cExperimentalHours == null) {
+                cExperimentalHours = "0";
+            }
+            int cTotalHours = Integer.parseInt(cTheoryHours) + Integer.parseInt(cExperimentalHours);
+            course.setcName(cName);
+            course.setcType(cType);
+            course.setcExamtype(cExamtype);
+            course.setcTheoryHours(Integer.parseInt(cTheoryHours));
+            course.setcExperimentalHours(Integer.parseInt(cExperimentalHours));
+            course.setcTotalHours(cTotalHours);
+            course.setcCredit(Integer.parseInt(cCredit));
+            
+            int num = courseBiz.addCourse(course);
+            
+            if (num > 0) {
+                out.write("添加成功！！");
+            } else {
+                out.write("添加失败！！");
+            }
+            out.flush();
+            out.close();
+            
+        } catch (Exception e){
+            e.printStackTrace();
+            out.write("添加失败！！");
         }
 	}
 	

@@ -36,21 +36,20 @@ pageContext.setAttribute("url", basePath);
     <div class="layui-col-md12 color-black">
         <div class="layui-row">
             <div class="layui-col-md4">
-                <span class="title-font"><i class="layui-icon">&#xe623;教师信息列表</i></span>
+                <span class="title-font"><i class="layui-icon">&#xe623;课程信息列表</i></span>
             </div>         
             <div class="layui-col-md4 layui-col-md-offset4">
                 <div align="right" class="demoTable">                	
-                   	<a class="layui-btn layui-btn-xs color-black" href="addTeacher.jsp" ><i class="layui-icon">&#xe654;&nbsp;新增</i></a>
-                    <a class="layui-btn layui-btn-xs color-black" data-type="editStudent"><i class="layui-icon">&#xe642;&nbsp;修改</i></a>
+                   	<a class="layui-btn layui-btn-xs color-black" href="addCourse.jsp" ><i class="layui-icon">&#xe654;&nbsp;新增</i></a>
+                    <a class="layui-btn layui-btn-xs color-black" data-type="editCourse"><i class="layui-icon">&#xe642;&nbsp;修改</i></a>
                     <a class="layui-btn layui-btn-xs color-black" data-type="getCheckData"><i class="layui-icon">&#xe640;&nbsp;删除</i></a>                    
                 </div>
             </div>           
         </div>
     </div>
     <div class="layui-col-md12">
-        <table id="TeacherList" lay-filter="test"></table>
+        <table id="CourseList" lay-filter="test"></table>
         <script type="text/html" id="barDemo">
-            <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
             <a class="layui-btn layui-btn-xs" lay-event="edit">修改</a>
             <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
         </script> 
@@ -63,22 +62,19 @@ pageContext.setAttribute("url", basePath);
     	  
     	  //第一个实例
     	    var talbleIns = table.render({
-	    	    elem: '#TeacherList',
+	    	    elem: '#CourseList',
 	    	    //height: 315,
-	    	    url: '${url}administratorServlet?type=listTeacherLimit',//数据接口	 
-	    	    cellMinWidth: 160,
+	    	    url: '${url}administratorServlet?type=listCourseLimit',//数据接口	 
 	    	    cols: [[ //表头
 	    	      {type: 'checkbox', width: 40},
-	    	      {field: 'tSno', title: '工号', sort: true, align: 'center', width: 110},
-	    	      {field: 'tName', title: '姓名', align: 'center', width: 110},
-	    	      {field: 'tSex', title: '性别', sort: true, align: 'center', width: 80},
-	    	      {field: 'dName', title: '院系', align: 'center'},
-	    	      {field: 'tPolitical', title: '政治面貌', align: 'center', width: 100},
-	    	      {field: 'tBirthday', title: '出生日期', sort: true, align: 'center', width: 110},	
-	    	      {field: 'tIdentity', title: '身份证号', sort: true, align: 'center', width: 180}, 
-	    	      {field: 'tAddress', title: '家庭住址', align: 'center'}, 
-	    	      {field: 'tQQ', title: '企鹅号', align: 'center', width: 110}, 
-	    	      {field: 'tWchat', title: '微信号', align: 'center', width: 120},
+	    	      {field: 'cid', title: '编号', sort: true, align: 'center'},
+	    	      {field: 'cName', title: '课程名', align: 'center'},
+	    	      {field: 'cType', title: '类型', sort: true, align: 'center'},
+	    	      {field: 'cExamtype', title: '考试类型', align: 'center'},
+	    	      {field: 'cTheoryHours', title: '理论课时', align: 'center'},
+	    	      {field: 'cExperimentalHours', title: '实验课时', sort: true, align: 'center'}, 
+	    	      {field: 'cTotalHours', title: '总课时', align: 'center'}, 
+	    	      {field: 'cCredit', title: '学分', align: 'center'}, 
 	    	      {title: '操作',fixed: 'right', align:'center', toolbar: '#barDemo', width: 160}
 	    	    ]],
 	    	    page: {
@@ -92,22 +88,17 @@ pageContext.setAttribute("url", basePath);
     	        var data = obj.data,       //获得当前行数据
     	            layEvent = obj.event;  //获得 lay-event 对应的值
     	        
-    	        //查看详情操作
-    	        if (layEvent === 'detail') {
-    	        	window.location.href = "${url}administratorServlet?type=getTeacherBySno&toPage=teacherDetial&tSno="+data.tSno;
-                    return ;
-    	        } 
     	        
     	        //删除操作
     	        if (layEvent === 'del') {
     	            layer.confirm('确定要删除吗？', function(index){
 	            	   obj.del(); 
 	            	   layer.close(index);
-	            	   var url = "${url}administratorServlet?type=deleteTeacher";
-	            	   $.post(url,{"tSno":data.tSno}, function(message){
+	            	   var url = "${url}administratorServlet?type=deleteCourseById";
+	            	   $.post(url,{"cId":data.cid}, function(message){
 	            		   layer.msg(message);
 	            		   talbleIns.reload({
-	                           url: '${url}administratorServlet?type=listTeacherLimit'
+	                           url: '${url}administratorServlet?type=listCourseLimit'
 	                       });
 	            	   }, "text");	            	   
     	            });
@@ -115,7 +106,7 @@ pageContext.setAttribute("url", basePath);
     	        }
     	        //编辑操作
     	        if (layEvent === 'edit') {
-    	        	window.location.href = "${url}administratorServlet?type=getTeacherBySno&toPage=editTeacher&tSno="+data.tSno;	          
+    	        	window.location.href = "${url}administratorServlet?type=getCourseById&cId="+data.cid;	          
     	          return ;
     	        }
     	      });   	    
@@ -126,26 +117,26 @@ pageContext.setAttribute("url", basePath);
 					data = checkStatus.data;
 					//layer.alert(JSON.stringify(data));
 					if (data.length == 0){
-						layer.alert("请选择要删除的教师");
+						layer.alert("请选择要删除的课程");
 						return ;
 					}
 					layer.confirm('确定要删除吗？', function(index){
                         layer.close(index);
                         console.log(data);
                         for (var i = 0; i < data.length; i++){
-                            var teacher = data[i];
-                            var url = "${url}administratorServlet?type=deleteTeacher";  
+                            var course = data[i];
+                            var url = "${url}administratorServlet?type=deleteCourseById";  
                             $(document).queue("post", 
                                 $.ajax({
                                     url: url,
-                                    data: {"tSno":teacher.tSno}, 
+                                    data: {"cId":course.cid}, 
                                     type:"post",
                                     dataType: "text",
                                     success:function(message){
                                            layer.msg(message);                                              
                                            $(document).dequeue("post");
                                            talbleIns.reload({
-                                               url: '${url}administratorServlet?type=listTeacherLimit'
+                                               url: '${url}administratorServlet?type=listCourseLimit'
                                                    });
                                     },
                                     error:function(){
@@ -156,18 +147,18 @@ pageContext.setAttribute("url", basePath);
                         $(document).dequeue("post");
                     });					
 				},
-				editStudent: function(){
+				editCourse: function(){
 					var checkStatus = table.checkStatus('idTest'),
 					data = checkStatus.data;
 					if (data.length <= 0){
-                        layer.alert("请选择要编辑的教师");
+                        layer.alert("请选择要编辑的课程");
                         return ;
                     }
 					if (data.length > 1){
-                        layer.alert("一次只能编辑一个教师");
+                        layer.alert("一次只能编辑一个课程");
                         return ;
                     }
-					window.location.href = "${url}administratorServlet?type=getTeacherBySno&toPage=editTeacher&tSno="+data[0].tSno;
+					window.location.href = "${url}administratorServlet?type=getCourseById&cId="+data[0].cid;
 				},	
 	        };
     	    
