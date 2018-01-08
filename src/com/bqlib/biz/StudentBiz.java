@@ -13,6 +13,7 @@ import com.bqlib.dao.StudentDao;
 import com.bqlib.model.Department;
 import com.bqlib.model.Profession;
 import com.bqlib.model.Student;
+import com.bqlib.model.Teacher;
 import com.bqlib.util.DbUtil;
 
 public class StudentBiz {
@@ -20,6 +21,34 @@ public class StudentBiz {
     private StudentDao studentDao = new StudentDao();
     private DepartmentDao departmentDao = new DepartmentDao();
     private ProfessionDao professionDao = new ProfessionDao();
+    
+    /**
+     * 检查学生（用于登录）
+     * @param user
+     * @param pwd
+     * @return
+     * @throws Exception
+     */
+    public Student checkStudent(String user, String pwd) throws Exception {
+        Connection conn = DbUtil.getConn();
+        Student student = studentDao.checkStudent(user, pwd);
+        DbUtil.close();
+        return student;
+    }
+    
+    /**
+     * 修改学生密码
+     * @param pwd
+     * @param sSno
+     * @return
+     * @throws Exception
+     */
+    public int updatePwd(String sSno, String pwd) throws Exception {
+        Connection conn = DbUtil.getConn();        
+        int num = studentDao.updatePwd(sSno, pwd);
+        DbUtil.close();
+        return num;     
+    }
     
     /**
      * 查询所有学生的信息
@@ -42,7 +71,7 @@ public class StudentBiz {
         }
         DbUtil.close();
         return listStudent;
-    }
+    }   
     
     /**
      * 按学号查询学生

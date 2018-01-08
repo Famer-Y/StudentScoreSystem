@@ -1,15 +1,63 @@
 package com.bqlib.dao;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.bqlib.model.Admin;
 import com.bqlib.model.Student;
 import com.bqlib.model.Teacher;
 import com.bqlib.util.DbUtil;
 
 public class TeacherDao {
+    
+    /**
+     * 检查教师（用于登录）
+     * @param user
+     * @param pwd
+     * @return
+     * @throws Exception
+     */
+    public Teacher checkTeacher(String user, String pwd) throws Exception {
+        Teacher teacher = null;
+        String sql = "select tSno,tPassword,tName,tSex,tBirthday,tPolitical,dId,tIdentity,tAddress,tQQ,tWchat,tPhone,tEmail,tPhotoPath from teacher where tSno = ? and tPassword = ?";
+        ResultSet rs = DbUtil.executeQuery(sql, new Object[]{user, pwd});
+        while (rs.next()) {
+            teacher = new Teacher();
+            teacher.settSno(rs.getString("tSno"));
+            teacher.settPassword(rs.getString("tPassword"));
+            teacher.settName(rs.getString("tName"));
+            teacher.settSex(rs.getString("tSex"));
+            Date birthday = new Date();
+            birthday = (Date) rs.getDate("tBirthday");
+            teacher.settBirthday(birthday);
+            teacher.settPolitical(rs.getString("tPolitical"));
+            teacher.setdId(rs.getString("dId"));
+            teacher.settIdentity(rs.getString("tIdentity"));
+            teacher.settAddress(rs.getString("tAddress"));
+            teacher.settQQ(rs.getString("tQQ"));
+            teacher.settWchat(rs.getString("tWchat"));
+            teacher.settPhone(rs.getString("tPhone"));
+            teacher.settEmail(rs.getString("tEmail"));
+            teacher.settPhotoPath(rs.getString("tPhotoPath"));
+        }
+        return teacher;
+    }
+    
+    /**
+     * 修改教师密码
+     * @param id
+     * @param pwd
+     * @return
+     * @throws Exception 
+     */
+    public int updatePwd(String tSno, String pwd) throws Exception {
+        String sql = "update teacher set tPassword = ? where tSno = ?";
+        int num = DbUtil.executeUpdate(sql, new Object[]{pwd, tSno});
+        return num;       
+    }
     
     /**
      * 添加教师

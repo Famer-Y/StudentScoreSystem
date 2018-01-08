@@ -139,4 +139,31 @@ public class CourseDao {
         }        
         return listCourse;
     } 
+    
+    /**
+     * 获取表中所有的课程
+     * @param start
+     * @param size
+     * @return
+     * @throws Exception
+     */
+    public List<Course> listCourse() throws Exception {    
+        
+        List<Course> listCourse = new ArrayList<Course>();
+        String sql = "select cid,cName,cType,cExamtype,cTheoryHours,cExperimentalHours,cTotalHours,cCredit from course";
+        ResultSet rs = DbUtil.executeQuery(sql, null);        
+        while (rs.next()){
+            Course course = new Course();
+            course.setCid(rs.getLong("cid"));
+            course.setcName(rs.getString("cName"));
+            course.setcType(rs.getString("cType"));
+            course.setcExamtype(rs.getString("cExamtype"));
+            course.setcTheoryHours(rs.getInt("cTheoryHours"));
+            course.setcExperimentalHours(rs.getInt("cExperimentalHours"));
+            course.setcTotalHours(rs.getInt("cTotalHours"));
+            course.setcCredit(rs.getInt("cCredit"));
+            listCourse.add(course);
+        }        
+        return listCourse;
+    }
 }

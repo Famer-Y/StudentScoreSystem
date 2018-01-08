@@ -6,10 +6,58 @@ import java.util.Date;
 import java.util.List;
 
 import com.bqlib.model.Student;
+import com.bqlib.model.Teacher;
 import com.bqlib.util.DbUtil;
 
 public class StudentDao {
 	
+    /**
+     * 检查学生（用于登录）
+     * @param user
+     * @param pwd
+     * @return
+     * @throws Exception
+     */
+    public Student checkStudent(String user, String pwd) throws Exception {
+        Student student = null;
+        String sql = "select * from student where sSno = ? and sPassword = ?";
+        ResultSet rs = DbUtil.executeQuery(sql, new Object[]{user, pwd});
+        while (rs.next()) {
+            student = new Student();
+            student.setsSno(rs.getString("sSno"));
+            student.setsPassword(rs.getString("sPassword"));
+            student.setsName(rs.getString("sName"));
+            student.setsSex(rs.getString("sSex"));
+            Date birthday = new Date();
+            birthday = (Date) rs.getDate("sBirthday");
+            student.setsBirthday(birthday);
+            student.setsPolitical(rs.getString("sPolitical"));
+            student.setdId(rs.getString("dId"));
+            student.setpId(rs.getString("pId"));
+            student.setsIdentity(rs.getString("sIdentity"));
+            student.setsAddress(rs.getString("sAddress"));
+            student.setsQQ(rs.getString("sQQ"));
+            student.setsWchat(rs.getString("sWchat"));
+            student.setsPhone(rs.getString("sPhone"));
+            student.setsEmail(rs.getString("sEmail"));
+            student.setsPhotoPath(rs.getString("sPhotoPath"));
+        }
+        return student;
+    }
+    
+    /**
+     * 修改学生密码
+     * @param pwd
+     * @param sSno
+     * @return
+     * @throws Exception
+     */
+    public int updatePwd(String sSno, String pwd) throws Exception {
+        String sql = "update student set sPassword = ? where sSno = ?";
+        int num = DbUtil.executeUpdate(sql, new Object[]{pwd, sSno});
+        return num;
+    }
+    
 	/**
 	 * 添加学生
 	 * @param student
@@ -53,6 +101,8 @@ public class StudentDao {
 				student.getsPhone(), student.getsEmail(), student.getsPhotoPath(), student.getsSno()});
 		return num;
 	}
+	
+	
 	
 	/**
 	 * 统计学生的人数

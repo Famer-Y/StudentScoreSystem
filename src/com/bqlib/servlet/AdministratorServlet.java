@@ -15,16 +15,20 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bqlib.biz.AdministratorBiz;
 import com.bqlib.biz.CourseBiz;
 import com.bqlib.biz.DepartmentBiz;
 import com.bqlib.biz.PoliticalBiz;
 import com.bqlib.biz.ProfessionBiz;
+import com.bqlib.biz.ScoreBiz;
 import com.bqlib.biz.StudentBiz;
 import com.bqlib.biz.TeacherBiz;
+import com.bqlib.model.Admin;
 import com.bqlib.model.Course;
 import com.bqlib.model.Department;
 import com.bqlib.model.Political;
 import com.bqlib.model.Profession;
+import com.bqlib.model.Score;
 import com.bqlib.model.Student;
 import com.bqlib.model.Teacher;
 import com.bqlib.util.JsonDateValueProcessorUtil;
@@ -44,6 +48,8 @@ public class AdministratorServlet extends HttpServlet {
 	private ProfessionBiz professionBiz = new ProfessionBiz();
 	private PoliticalBiz politicalBiz = new PoliticalBiz();
 	private CourseBiz courseBiz = new CourseBiz();
+	private ScoreBiz scoreBiz = new ScoreBiz();
+	private AdministratorBiz adminBiz = new AdministratorBiz();
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -253,7 +259,171 @@ public class AdministratorServlet extends HttpServlet {
 		    deleteCourseById(request, response);
             System.out.println("删除课程");
             return ;
-        }		
+        }	
+		if ("updatePwd".equals(type)) {
+		    updatePwd(request, response);
+            System.out.println("修改密码");
+            return ;
+        }
+		if ("listCourse".equals(type)) {
+		    listCourse(request, response);
+            System.out.println("获取所有课程");
+            return ;
+        }
+		if ("addScore".equals(type)) {
+		    addScore(request, response);
+            System.out.println("添加成绩");
+            return ;
+        }
+		if ("listScoreLimit".equals(type)) {
+		    listScoreLimit(request, response);
+            System.out.println("获取成绩列表");
+            return ;
+        }
+	}
+	
+	protected void listScoreLimit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    PrintWriter out = response.getWriter();
+        try {
+            String keyword = request.getParameter("keyword");
+            String pIndex = request.getParameter("page"); //获取数据表格请求的页数
+            String limit = request.getParameter("limit"); //获取数据表格请求的每页显示的条数
+            
+            Integer start = 0;
+            Integer pageSize = 0;
+            
+            int countScoreAll = scoreBiz.countScoreAll();
+            
+            if (null != limit) {
+                pageSize = Integer.parseInt(limit);
+            } else {
+                pageSize = 10;
+            }
+            
+            if (null != pIndex) {
+                Integer index = Integer.parseInt(pIndex);
+                if (countScoreAll > pageSize){
+                    start = (index - 1) * pageSize;
+                }               
+            }
+            JsonConfig jsonConfig = new JsonConfig();  
+            jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessorUtil());
+            JSONObject json = new JSONObject();
+            
+            List<Score> listScore = scoreBiz.listScoreLimit(start, pageSize);   
+            if (null == listScore) {
+                json.put("code", 0);
+                json.put("msg", "");
+                json.put("count", 0); 
+                json.put("data","");
+                out.write(json.toString());
+                out.flush();
+                out.close();
+                return ;
+            }
+            JSONArray jsonArr = JSONArray.fromObject(listScore, jsonConfig);
+
+            json.put("code", 0);
+            json.put("msg", "");
+            json.put("count", countScoreAll); 
+            json.put("data", jsonArr);
+
+            out.write(json.toString());
+            out.flush();
+            out.close();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
+	}
+	
+	protected void addScore(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    PrintWriter out = response.getWriter();
+	    try {
+	        String sSno = request.getParameter("sSno");
+	        Student student = studentBiz.getStudentBySno(sSno);
+	        if (student == null) {
+	            out.write("学生学号有误");
+	            out.flush();
+	            out.close(); 
+	            return ;
+	        }
+	        String tSno = request.getParameter("tSno");
+            Teacher teacher = teacherBiz.getTeacherBySno(tSno);
+            if (teacher == null) {
+                out.write("教师工号有误");
+                out.flush();
+                out.close(); 
+                return ;
+            }
+            String cId = request.getParameter("cId");
+            System.out.println(cId);
+            int num = scoreBiz.addScore(sSno, Integer.parseInt(cId), tSno);
+            
+            if (num > 0) {
+                out.write("添加成功！！");
+            } else {
+                out.write("添加失败！！");
+            }
+            out.flush();
+            out.close();           
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+	}
+	
+	protected void listCourse(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    PrintWriter out = response.getWriter();
+        try{
+            List<Course> courseList = courseBiz.listCourse();
+            JSONArray jsonArr = JSONArray.fromObject(courseList);
+            out.write(jsonArr.toString());
+            out.flush();
+            out.close();           
+        } catch (Exception e){
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
+	}
+	
+	//${url}administratorServlet?type=updatePwd&user=${adminlogin.username }&pwd=${adminlogin.pwd }
+	protected void updatePwd(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    PrintWriter out = response.getWriter();
+        try {
+            String oldpwd = request.getParameter("oldpwd");
+            Admin user = (Admin)request.getSession().getAttribute("adminlogin");
+            String newpwd = request.getParameter("newpwd");
+            String renewpwd = request.getParameter("renewpwd");
+            
+            if (!newpwd.equals(renewpwd)) {
+                out.write("两次新密码输入不同");
+                out.flush();
+                out.close();
+                return ;
+            }
+            
+            if (!oldpwd.equals(user.getPwd())) {
+                out.write("原密码输入有误");
+                out.flush();
+                out.close();
+                return ;
+            }
+            
+            int num = adminBiz.updatePwd(user.getId(), newpwd);           
+                         
+            if (num > 0) {
+                out.write("密码修改成功！！");
+            } else {
+                out.write("密码修改失败！！");
+            }
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            //response.sendRedirect("error.jsp");
+        }
 	}
 	
 	protected void deleteCourseById(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -1580,8 +1750,9 @@ public class AdministratorServlet extends HttpServlet {
                 jumpPage = "admin/student/editStudent.jsp";
                 
             } else if ("studentDetial".equals(toPage)) {
-                jumpPage = "admin/student/studentDetial.jsp";
-                
+                jumpPage = "admin/student/studentDetial.jsp";                
+            } else if ("course".equals(toPage)) {
+                jumpPage = "admin/score/addScore.jsp";                
             }
             Student student = studentBiz.getStudentBySno(sSno);
             

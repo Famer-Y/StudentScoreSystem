@@ -3,6 +3,7 @@ pageEncoding="utf-8"%>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+pageContext.setAttribute("url", basePath);
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -222,20 +223,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					</div>
 				</div>
 			</div>
-			<!--  
+			
 			<div class="layui-col-md12">
-				<div class="layui-row">
-					<div class="layui-col-md4 layui-col-md-offset4">
-						<div class="layui-form-item">
-							<div class="layui-input-block">
-								<button class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
-								<button type="reset" class="layui-btn layui-btn-primary">重置</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			-->
+                <div class="layui-row">
+                    <div class="layui-col-md4 layui-col-md-offset4">
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <a href="${url}administratorServlet?type=getStudentBySno&toPage=editStudent&sSno=${student.sSno}" class="layui-btn">修改</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 		</div>
 	</form>
 </div>

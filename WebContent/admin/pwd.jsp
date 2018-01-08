@@ -86,7 +86,7 @@ pageContext.setAttribute("url", basePath);
         </div>
     </form>
 </div>
-<script src=".plugins/jquery/jquery-3.2.1.min.js"></script>
+<script src="plugins/jquery/jquery-3.2.1.min.js"></script>
 <script type="text/javascript" src="plugins/layui/layui.js"></script>
 <script>    
 
@@ -115,10 +115,12 @@ pageContext.setAttribute("url", basePath);
 
         //监听提交
         form.on('submit(demo1)', function(data) {
-            var url = "${url}administratorServlet?type=addCourse";
+            var url = "${url}administratorServlet?type=updatePwd";
             $.post(url,data.field,function(result){
                 layer.msg(result);
-                $("#reset").trigger("click");
+                if ("密码修改成功！！" == result) {
+                	$("#reset").trigger("click");
+                }                
             },"text");          
             return false;
         });

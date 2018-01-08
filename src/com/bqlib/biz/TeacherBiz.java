@@ -16,6 +16,34 @@ public class TeacherBiz {
     private DepartmentDao departmentDao = new DepartmentDao();
     
     /**
+     * 检查教师（用于登录）
+     * @param user
+     * @param pwd
+     * @return
+     * @throws Exception
+     */
+    public Teacher checkTeacher(String user, String pwd) throws Exception {
+        Connection conn = DbUtil.getConn();
+        Teacher teacher = teacherDao.checkTeacher(user, pwd);
+        DbUtil.close();
+        return teacher;
+    }
+    
+    /**
+     * 修改教师密码
+     * @param id
+     * @param pwd
+     * @return
+     * @throws Exception 
+     */
+    public int updatePwd(String tSno, String pwd) throws Exception {
+        Connection conn = DbUtil.getConn();
+        int num = teacherDao.updatePwd(tSno, pwd);
+        DbUtil.close();
+        return num;      
+    }
+    
+    /**
      * 添加教师
      * @param teacher
      * @return

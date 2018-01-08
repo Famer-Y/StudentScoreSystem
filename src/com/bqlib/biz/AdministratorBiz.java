@@ -26,4 +26,18 @@ public class AdministratorBiz {
         DbUtil.close();
         return admin;
     }
+    
+    /**
+     * 修改管理员密码
+     * @param id
+     * @param pwd
+     * @return
+     * @throws Exception 
+     */
+    public int updatePwd(long id, String pwd) throws Exception {
+        Connection conn = DbUtil.getConn();
+        int num = adminDao.updatePwd(id, pwd);
+        DbUtil.close();
+        return num;
+    }
 }

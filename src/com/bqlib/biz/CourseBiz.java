@@ -64,6 +64,20 @@ public class CourseBiz {
     }
     
     /**
+     * 获取表中所有的课程
+     * @param start
+     * @param size
+     * @return
+     * @throws Exception
+     */
+    public List<Course> listCourse() throws Exception { 
+        Connection conn = DbUtil.getConn();
+        List<Course> courseList = courseDao.listCourse();
+        DbUtil.close();
+        return courseList;
+    }
+    
+    /**
      * 删除课程
      * @param id
      * @return
