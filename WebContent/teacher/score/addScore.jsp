@@ -137,7 +137,7 @@ pageContext.setAttribute("url", basePath);
             //});
             var url = "${url}teacherServlet?type=getStudentBySnoForTable";
             $.post(url,data.field,function(result){
-                alert(result);
+                layer.msg(result);
                 window.location.href = "${url}teacherServlet?type=selectScoreBySidAndCid&sSno=${score.sSno}&tId=${score.cId}";
             },"text");          
             return false;

@@ -130,7 +130,9 @@ pageContext.setAttribute("url", basePath);
         	var url = "${url}administratorServlet?type=addDepartment";
         	$.post(url,data.field,function(result){
         		layer.msg(result);
-        		$("#reset").trigger("click");
+        		if ("添加成功！！" == result) {
+                    $("#reset").trigger("click");
+                }
         	},"text");       	
             return false;
         });       
